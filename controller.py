@@ -1,13 +1,18 @@
 
-#тут будет Фастапи
+#тут будет Фласк
+from flask import Flask, request, render_template, session
 
-from fastapi import FastAPI
-from fastapi.responses import FileResponse
+app = Flask(__name__)
 
-app = FastAPI()
 
-@app.get("/", response_class=FileResponse)
-def read_root():
-    return "public/index.html"
+app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        pass
+    else:
+        render_template("login.html")
+
+app.run(debug=True)
+
 
 
