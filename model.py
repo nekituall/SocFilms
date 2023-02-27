@@ -8,7 +8,8 @@ from mysql.connector import Error
 config = {
     "user": "user",
     "password": "1ngodwetrust",
-    "host": "127.0.0.1"
+    "host": "127.0.0.1",
+    "database" : "socfilms_db"
 }
 
 
@@ -53,11 +54,12 @@ def create_user(person):
     print("Added")
 
 def ask_friend(values):
-    """ask for new friend"""
+    """ask for new friend
+    values кортеж = (отправитель запроса, получатель запроса)
+    """
     conn = create_conn(config)
     cur = conn.cursor()
-    cur.execute("""INSERT INTO friends (`main_user`,`friend_user`,`valid`) 
-    VALUES (%s,%s,0)""", values)
+    cur.execute("""INSERT INTO friends (`main_user`,`friend_user`) VALUES (%s,%s)""", values)
     close_db(conn)
     print("ASKed for friend")
 
@@ -94,5 +96,5 @@ def delete_film():
 
 
 
-# if __name__ == "__main__":
-#     deploy_db(config)
+if __name__ == "__main__":
+    create_user(("Julia", "Kut", "Kutashek", "kutashek@ya.ru", "Russia"))
