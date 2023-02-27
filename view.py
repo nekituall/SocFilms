@@ -17,6 +17,7 @@ data = requests.get(complete_url, headers={'X-API-KEY': 'HD1BMKQ-FKM4QEE-NPR9WFW
 print(data)
 final_data = data.json()
 
-final_data = json.dumps(final_data, indent=4)
+final_data = json.dumps(final_data, indent=4)  #сериализует данные в удобынй вид
 
 print(final_data)
+
