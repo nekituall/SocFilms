@@ -2,9 +2,15 @@
 import mysql.connector
 import time
 from mysql.connector import Error
+from view import search_api
 
+#для развертки БД
+config_deploy = {
+    "user": "user",
+    "password": "1ngodwetrust",
+    "host": "127.0.0.1"
+}
 
-#для БД
 config = {
     "user": "user",
     "password": "1ngodwetrust",
@@ -14,7 +20,7 @@ config = {
 
 
 def create_conn(config):
-    """create coonection using config"""
+    """создать подключение к БД"""
     try:
         conn = mysql.connector.connect(**config)
         conn.autocommit = True
@@ -25,8 +31,9 @@ def create_conn(config):
 
 
 def deploy_db():
-    """aux func to deploy DB onto MySQL"""
-    conn = create_conn(config)
+    """вспомогательная функция по развертке DB onto MySQL
+        будут нужны права ДБА"""
+    conn = create_conn(config_deploy)
     cur = conn.cursor()
     try:
         with open("db//db_create.sql") as f:
@@ -38,56 +45,100 @@ def deploy_db():
 
 
 def close_db(conn):
-    """closing conncetion with database"""
-    conn.close()
+    """закрывает подключение к DB"""
+    try:
+        conn.close()
+    except Error as e:
+        print(f"Conn not closed due to {e}")
 
 
-def create_user(person):
-    """add new user
+
+def create_user(person):            #ПАРОЛЬ добавить!!!!!
+    """добавить нового пользователя
     person - сущность пользвоателя в виде кортежа
     """
     conn = create_conn(config)
     cur = conn.cursor()
-    cur.execute("""INSERT INTO users (`name`,`surname`,`nickname`,
-  `email`,`country`) VALUES (%s,%s,%s,%s,%s)""", person)
+    query = ("INSERT INTO users (`name`,`surname`,`nickname`, `email`,`country`) VALUES (%s,%s,%s,%s,%s)")
+    cur.execute(query, person)
     close_db(conn)
     print("Added")
 
 def ask_friend(values):
-    """ask for new friend
+    """запросить дружбу
     values кортеж = (отправитель запроса, получатель запроса)
     """
     conn = create_conn(config)
     cur = conn.cursor()
-    cur.execute("""INSERT INTO friends (`main_user`,`friend_user`) VALUES (%s,%s)""", values)
+    query = ("INSERT INTO friends (`main_user`,`friend_user`) VALUES (%s,%s)")
+    cur.execute(query, values)
     close_db(conn)
     print("ASKed for friend")
 
 
 def confirm_friend(values):
-    """confirm new friend"""
+    """одобрить дружбу"""
     conn = create_conn(config)
     cur = conn.cursor()
-    cur.execute("""UPDATE friends SET `valid`=1 WHERE (`main_user`,`friend_user`)=(%s,%s)""", values)
+    query = ("UPDATE friends SET `valid`=1 WHERE (`main_user`,`friend_user`, 'status')=(%s,%s, 'confirmed')")
+    cur.execute(query, values)
     close_db(conn)
-    print("ASKed for friend")
+    print("Confirmed for friend")
 
 
-def delete_friend():
-    """delete a friend"""
+def reject_friend(values):
+    """отклонить дружбу"""
+    conn = create_conn(config)
+    cur = conn.cursor()
+    query = ("UPDATE friends SET `valid`=1 WHERE (`main_user`,`friend_user`, 'status')=(%s,%s, 'rejected')")
+    cur.execute(query, values)
+    close_db(conn)
+    print("Confirmed for friend")
+
+def delete_friend(values):
+    """Удалить друга
+    передать в values кортеж кто удаляет и кого удаляет"""
+    conn = create_conn(config)
+    cur = conn.cursor()
+    query = ("DELETE FROM friends WHERE (`main_user`,`friend_user`)=(%s,%s)")
+    cur.execute(query, values)
+    close_db(conn)
+    print("Deleted friend")
     pass
+# ROW_COUNT() для тестов
 
 
-def add_film():
-    """Add favourite film
+def search_film(name):
+    """ищем фильм в базе данных, если нету то по АПИ"""
+    conn = create_conn(config)
+    cur = conn.cursor()
+    cur.execute("""SELECT filmname, year FROM films WHERE filmname=%s""", name)
+    res = cur.fetchall()
+    if res == 0:
+        #запрос к АПИ
+        data = search_api(name)
+        return data
+    else:
+        close_db(conn)
+        return cur.fetchall()
+
+
+def add_film(value):
+    """Добавить любимый фильм
     1) если нету в общем списке films, тогда заполняются данные о фильме и автоматом добавляются данные в таблицу favorite_films
     2) иначе, добавляется запись в таблицу favorite_films
     """
+    conn = create_conn(config)
+    cur = conn.cursor()
+    query = """INSERT INTO films (`main_user`,`friend_user`) VALUES (%s,%s)"""
+    cur.execute(query, value)
+    close_db(conn)
+
     pass
 
 
 def delete_film():
-    """Delete favourite film
+    """Удалить любимый фильм
     удаляется запись из таблицы favorite_films
     """
     pass
@@ -97,4 +148,4 @@ def delete_film():
 
 
 if __name__ == "__main__":
-    create_user(("Julia", "Kut", "Kutashek", "kutashek@ya.ru", "Russia"))
+    create_user(("Julia", "Kut", "Kutashek", "kutashek@ya.ru", "Russia"))   #работает
