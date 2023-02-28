@@ -104,7 +104,6 @@ def delete_friend(values):
     cur.execute(query, values)
     close_db(conn)
     print("Deleted friend")
-    pass
 # ROW_COUNT() для тестов
 
 
@@ -134,17 +133,16 @@ def add_film(value):
     cur.execute(query, value)
     close_db(conn)
 
-    pass
 
-
-def delete_film():
+def delete_film(values):
     """Удалить любимый фильм
-    удаляется запись из таблицы favorite_films
-    """
-    pass
-
-
-
+    удаляется запись из таблицы favorite_films"""
+    conn = create_conn(config)
+    cur = conn.cursor()
+    query = ("DELETE FROM favouritefilms WHERE (`user_id`,`film_id`)=(%s,%s)")
+    cur.execute(query, values)
+    close_db(conn)
+    print("Deleted friend")
 
 
 if __name__ == "__main__":
