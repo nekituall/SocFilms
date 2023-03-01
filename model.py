@@ -1,7 +1,8 @@
+import time
 
 import mysql.connector
-import time
-from mysql.connector import Error, IntegrityError
+from mysql.connector import Error
+
 from view import search_api
 
 #для развертки БД
@@ -135,13 +136,22 @@ def search_film(name:tuple) -> list:
 
 
 def add_film(value: tuple):
-    """Добавить любимый фильм
+    """Добавить  фильм
     1) если нету в общем списке films, тогда заполняются данные о фильме и автоматом добавляются данные в таблицу favorite_films
     2) иначе, добавляется запись в таблицу favorite_films
     """
     conn = create_conn(config)
     cur = conn.cursor()
     query = "INSERT INTO films (filmname, year, genre, country) VALUES (%s,%s,%s,%s)"
+    cur.execute(query, value)
+    close_db(conn)
+
+
+def add_favourite(value: tuple):
+    """добавить любимый фильм"""
+    conn = create_conn(config)
+    cur = conn.cursor()
+    query = "INSERT INTO favouritefilms (user_id, film_id, add_date, rating, comments) VALUES (%s,%s,%s,%s,%s)"
     cur.execute(query, value)
     close_db(conn)
 
@@ -171,5 +181,7 @@ if __name__ == "__main__":
     # reject_friend((12, 15))       # работает
     # delete_friend((12, 15))       # работает
     # search_film(("Бэтмен",))      # работает
-    add_film(('Бэтмен: Начало', 2005, 'боевик, фантастика, приключения, драма', 'США, Великобритания'))
+    add_film(('Бэтмен: Начало', 2005, 'боевик, фантастика, приключения, драма', 'США, Великобритания'))     #работает НО записывает в поле несколько стран и жанров!!!!
+    # delete_film(())       #не тестровано
+
     pass
