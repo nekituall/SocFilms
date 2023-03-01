@@ -16,7 +16,7 @@ def search_api(name):
 
     for i in final_data["docs"]:
         result_set.append((i["name"], i["year"], [y["name"] for y in i["genres"]], [x["name"] for x in i["countries"]]))
-        print("Название:", i["name"], "// Год:", i["year"], "// Жанр:", [y["name"] for y in i["genres"]], "// Страна:", [x["name"] for x in i["countries"]])
+        # print("Название:", i["name"], "// Год:", i["year"], "// Жанр:", [y["name"] for y in i["genres"]], "// Страна:", [x["name"] for x in i["countries"]])
 
     return result_set
     # return final_data["docs"]
@@ -38,4 +38,4 @@ def search_api(name):
 #     print("Название: ", i["name"], "Год:  ", i["year"], "Страна", [x["name"] for x in i["countries"]])
 
 if __name__ == "__main__":
-    search_api("Бэтмен")
+    search_api("Титаник")

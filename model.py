@@ -145,43 +145,48 @@ def add_film(value: tuple):
     query = "INSERT INTO films (filmname, year, genre, country) VALUES (%s,%s,%s,%s)"
     cur.execute(query, value)
     close_db(conn)
+    print("Thanks! Added to film list")
 
 
 def add_favourite(value: tuple):
-    """добавить любимый фильм"""
+    """добавить любимый фильм
+    работает только после добавления в общую таблицу фильмов"""
     conn = create_conn(config)
     cur = conn.cursor()
     query = "INSERT INTO favouritefilms (user_id, film_id, add_date, rating, comments) VALUES (%s,%s,%s,%s,%s)"
     cur.execute(query, value)
     close_db(conn)
+    print("Added to favourites")
 
 
-def delete_film(values):
+def delete_favourite(value: tuple):
     """Удалить любимый фильм
     удаляется запись из таблицы favorite_films"""
     conn = create_conn(config)
     cur = conn.cursor()
-    query = ("DELETE FROM favouritefilms WHERE (`user_id`,`film_id`)=(%s,%s)")
-    cur.execute(query, values)
+    query = "DELETE FROM favouritefilms WHERE (user_id, film_id)=(%s,%s)"
+    cur.execute(query, value)
     close_db(conn)
-    print("Deleted friend")
+    print("Deleted from favourites")
+
 
 a = ("Julia",   "Kut",      "Kutashek", "passw1", "kutashek@ya.ru", "Russia")
 b = ('Nikita',	'Pavlov',	'niknik', 'passw',	'kolbase@mail.ru',	'Bangladesh')
 c = ('Vasya',	'Ganin',	'pikNick',  'passw',	'pikNick@mail.ru',	'Bangladesh')
 d = ('Luci',	'Liu',	'Lucinda23',  'passw',	'Lucinda23@fail.ru',	'Canada')
+film1 = ('Бэтмен: Начало', 2005, 'боевик, фантастика, приключения, драма', 'США, Великобритания')
+film2 = ('Титаник', 1997, 'мелодрама, история, триллер, драма', 'США, Мексика')
 
 
 if __name__ == "__main__":
-    # create_conn()
-    # deploy_db(config_deploy)
+    # deploy_db(config_deploy)      # работает
     # create_user(a)                # работает
     # ask_friend((12, 15))          # работает
     # confirm_friend((12,15))       # работает
     # reject_friend((12, 15))       # работает
     # delete_friend((12, 15))       # работает
-    # search_film(("Бэтмен",))      # работает
-    add_film(('Бэтмен: Начало', 2005, 'боевик, фантастика, приключения, драма', 'США, Великобритания'))     #работает НО записывает в поле несколько стран и жанров!!!!
-    # delete_film(())       #не тестровано
-
+    # search_film(("Титаник",))      # работает
+    # add_film(film2)     #работает НО записывает в поле несколько стран и жанров!!!!
+    # add_favourite((12, 2, "2023-04-11", 3, "для семейного просмотра"))       #работает , если дата-строчка
+    # delete_favourite((12, 1))       # работает
     pass
