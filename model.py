@@ -1,7 +1,7 @@
 import time
 
 import mysql.connector
-from mysql.connector import Error
+from mysql.connector import Error, IntegrityError
 
 from view import search_api
 
@@ -65,7 +65,7 @@ def create_user(person):
     try:
         conn = create_conn(config)
         cur = conn.cursor()
-        query = ("INSERT INTO users (name, surname, nickname, passw, email, country) VALUES (%s,%s,%s,%s,%s,%s)")
+        query = ("INSERT INTO users (name, surname, nickname, passw, email, country) VALUES (%s,%s,%s,%s,%s,%s);")
         cur.execute(query, person)
         close_db(conn)
         print("User added")
@@ -79,7 +79,7 @@ def ask_friend(values):
     """
     conn = create_conn(config)
     cur = conn.cursor()
-    query = ("INSERT INTO friends (main_user, friend_user) VALUES (%s,%s)")
+    query = ("INSERT INTO friends (main_user, friend_user) VALUES (%s,%s);")
     cur.execute(query, values)
     close_db(conn)
     print("ASKed for friend")
@@ -89,7 +89,7 @@ def confirm_friend(values):
     """одобрить дружбу"""
     conn = create_conn(config)
     cur = conn.cursor()
-    query = ("UPDATE friends SET status='confirmed' WHERE (main_user, friend_user)=(%s,%s)")
+    query = ("UPDATE friends SET status='confirmed' WHERE (main_user, friend_user)=(%s,%s);")
     cur.execute(query, values)
     close_db(conn)
     print("Confirmed for friend")
@@ -99,7 +99,7 @@ def reject_friend(values):
     """отклонить дружбу"""
     conn = create_conn(config)
     cur = conn.cursor()
-    query = ("UPDATE friends SET status='rejected' WHERE (`main_user`,`friend_user`)=(%s,%s)")
+    query = ("UPDATE friends SET status='rejected' WHERE (`main_user`,`friend_user`)=(%s,%s);")
     cur.execute(query, values)
     close_db(conn)
     print("Confirmed for friend")
@@ -109,7 +109,7 @@ def delete_friend(values):
     передать в values кортеж кто удаляет и кого удаляет"""
     conn = create_conn(config)
     cur = conn.cursor()
-    query = ("DELETE FROM friends WHERE (main_user, friend_user)=(%s,%s)")
+    query = ("DELETE FROM friends WHERE (main_user, friend_user)=(%s,%s);")
     cur.execute(query, values)
     close_db(conn)
     print("Deleted friend")
@@ -120,7 +120,7 @@ def search_film(name:tuple) -> list:
     """ищем фильм в базе данных, если нету то по АПИ"""
     conn = create_conn(config)
     cur = conn.cursor()
-    cur.execute("SELECT filmname, year FROM films WHERE filmname=%s", name)
+    cur.execute("SELECT filmname, year FROM films WHERE filmname=%s;", name)
     res = cur.fetchall()
     print(res)
     if len(res) == 0:
@@ -142,8 +142,44 @@ def add_film(value: tuple):
     """
     conn = create_conn(config)
     cur = conn.cursor()
-    query = "INSERT INTO films (filmname, year, genre, country) VALUES (%s,%s,%s,%s)"
-    cur.execute(query, value)
+    try:
+        query_add_film = "INSERT INTO films (filmname, year) VALUES (%s,%s);"
+        cur.execute(query_add_film, value[:2])
+        film_id = cur.execute("SELECT LAST_INSERT_ID();")
+        for country in value[3]:
+            cur.execute("SELECT idcountries FROM countries WHERE countryname=%s;", country)
+            row = cur.fetchone()
+            if len(row) !=0:
+                countryid = row
+            else:
+                query_country = "INSERT INTO countries (countryname) VALUES (%s);"   #добавить страну в таблицу
+                cur.execute(query_country, country)
+                cur.execute("SELECT LAST_INSERT_ID();")
+                countryid = cur.fetchone()
+            cur.execute("INSERT INTO countryfilms (id_film, id_country) VALUES (%s, %s);", (film_id, countryid))
+    except IntegrityError:
+        pass
+        for genre in value[2]:
+            cur.execute("SELECT idgenres FROM genres WHERE genre=%s;", genre)
+            row = cur.fetchone()
+            if len(row) != 0:
+                genreid = row
+            else:
+
+                cur.execute("INSERT INTO genres (genre) VALUES (%s);", genre)   #добавить жанры в таблицу
+                cur.execute(query_genre, genre)
+    except IntegrityError:
+        pass
+
+    query_add_film = "INSERT INTO films (filmname, year) VALUES (%s,%s);"
+    cur.execute(query_add_film, value[:2])
+
+
+
+    #теперь надо связать сущности фильма и его жанров и стран
+    query_add_film = "INSERT INTO countryfilms (id_film, id_country) VALUES (%s,%s);"
+
+
     close_db(conn)
     print("Thanks! Added to film list")
 
@@ -153,7 +189,7 @@ def add_favourite(value: tuple):
     работает только после добавления в общую таблицу фильмов"""
     conn = create_conn(config)
     cur = conn.cursor()
-    query = "INSERT INTO favouritefilms (user_id, film_id, add_date, rating, comments) VALUES (%s,%s,%s,%s,%s)"
+    query = "INSERT INTO favouritefilms (user_id, film_id, add_date, rating, comments) VALUES (%s,%s,%s,%s,%s);"
     cur.execute(query, value)
     close_db(conn)
     print("Added to favourites")
@@ -164,7 +200,7 @@ def delete_favourite(value: tuple):
     удаляется запись из таблицы favorite_films"""
     conn = create_conn(config)
     cur = conn.cursor()
-    query = "DELETE FROM favouritefilms WHERE (user_id, film_id)=(%s,%s)"
+    query = "DELETE FROM favouritefilms WHERE (user_id, film_id)=(%s,%s);"
     cur.execute(query, value)
     close_db(conn)
     print("Deleted from favourites")
