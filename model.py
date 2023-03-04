@@ -24,7 +24,6 @@ def create_conn(config):
     """создать подключение к БД"""
     try:
         conn = mysql.connector.connect(**config)
-        conn.autocommit = True
         print("Connection succeed")
         return conn
     except Error as e:  #чтото с привелегиями dba??
@@ -36,18 +35,17 @@ def deploy_db(config_deploy):
         будут нужны права ДБА"""
     try:
         conn = mysql.connector.connect(**config_deploy)
-        conn.autocommit = True
         cur = conn.cursor()
         try:
-            with open("db//db_create.sql") as f:
+            with open("db//db_create_final.sql") as f:
                 deploy_query = f.read()
             cur.execute(deploy_query)
             print(f"DB deployed at {time.asctime()}")  # в лог
         except Error as e:
             print(f"DB not deployed at {time.asctime()} with {e}")
+        close_db(conn)
     except Error as e:
         print(f"Connection failed due to {e}")
-    close_db(conn)
 
 
 def close_db(conn):
@@ -67,6 +65,7 @@ def create_user(person):
         cur = conn.cursor()
         query = ("INSERT INTO users (name, surname, nickname, passw, email, country) VALUES (%s,%s,%s,%s,%s,%s);")
         cur.execute(query, person)
+        conn.commit()
         close_db(conn)
         print("User added")
     except mysql.connector.errors.IntegrityError as e:
@@ -81,6 +80,7 @@ def ask_friend(values):
     cur = conn.cursor()
     query = ("INSERT INTO friends (main_user, friend_user) VALUES (%s,%s);")
     cur.execute(query, values)
+    conn.commit()
     close_db(conn)
     print("ASKed for friend")
 
@@ -91,6 +91,7 @@ def confirm_friend(values):
     cur = conn.cursor()
     query = ("UPDATE friends SET status='confirmed' WHERE (main_user, friend_user)=(%s,%s);")
     cur.execute(query, values)
+    conn.commit()
     close_db(conn)
     print("Confirmed for friend")
 
@@ -99,10 +100,11 @@ def reject_friend(values):
     """отклонить дружбу"""
     conn = create_conn(config)
     cur = conn.cursor()
-    query = ("UPDATE friends SET status='rejected' WHERE (`main_user`,`friend_user`)=(%s,%s);")
+    query = ("UPDATE friends SET status='rejected' WHERE (main_user, friend_user)=(%s,%s);")
     cur.execute(query, values)
+    conn.commit()
     close_db(conn)
-    print("Confirmed for friend")
+    print("Rejected friend")
 
 def delete_friend(values):
     """Удалить друга
@@ -111,6 +113,7 @@ def delete_friend(values):
     cur = conn.cursor()
     query = ("DELETE FROM friends WHERE (main_user, friend_user)=(%s,%s);")
     cur.execute(query, values)
+    conn.commit()
     close_db(conn)
     print("Deleted friend")
 # ROW_COUNT() для тестов
@@ -137,51 +140,43 @@ def search_film(name:tuple) -> list:
 
 def add_film(value: tuple):
     """Добавить  фильм
-    1) если нету в общем списке films, тогда заполняются данные о фильме и автоматом добавляются данные в таблицу favorite_films
-    2) иначе, добавляется запись в таблицу favorite_films
+    при добавлении фильма проверяются таблицы жанров и стран, чтобы не было дубликатов
     """
     conn = create_conn(config)
-    cur = conn.cursor()
-    try:
-        query_add_film = "INSERT INTO films (filmname, year) VALUES (%s,%s);"
-        cur.execute(query_add_film, value[:2])
-        film_id = cur.execute("SELECT LAST_INSERT_ID();")
-        for country in value[3]:
-            cur.execute("SELECT idcountries FROM countries WHERE countryname=%s;", country)
-            row = cur.fetchone()
-            if len(row) !=0:
-                countryid = row
-            else:
-                query_country = "INSERT INTO countries (countryname) VALUES (%s);"   #добавить страну в таблицу
-                cur.execute(query_country, country)
-                cur.execute("SELECT LAST_INSERT_ID();")
-                countryid = cur.fetchone()
-            cur.execute("INSERT INTO countryfilms (id_film, id_country) VALUES (%s, %s);", (film_id, countryid))
-    except IntegrityError:
-        pass
-        for genre in value[2]:
-            cur.execute("SELECT idgenres FROM genres WHERE genre=%s;", genre)
-            row = cur.fetchone()
-            if len(row) != 0:
-                genreid = row
-            else:
-
-                cur.execute("INSERT INTO genres (genre) VALUES (%s);", genre)   #добавить жанры в таблицу
-                cur.execute(query_genre, genre)
-    except IntegrityError:
-        pass
-
+    cur = conn.cursor(buffered=True)
     query_add_film = "INSERT INTO films (filmname, year) VALUES (%s,%s);"
     cur.execute(query_add_film, value[:2])
+    film_id = cur.lastrowid
+    def add_country(film_id):
+        for country in value[3]:
+            query = "SELECT idcountries FROM countries WHERE countryname=%s;"
+            cur.execute(query, (country,))
+            row = cur.fetchone()
+            if row != None:
+                countryid = row[0]
+            else:
+                query_country = "INSERT INTO countries (countryname) VALUES (%s);"   #добавить страну в таблицу
+                cur.execute(query_country, (country,))
+                cur.execute("SELECT LAST_INSERT_ID();")
+                countryid = cur.fetchone()[0]
+            cur.execute("INSERT INTO countryfilms (id_film, id_country) VALUES (%s,%s);", (film_id, countryid))
 
-
-
-    #теперь надо связать сущности фильма и его жанров и стран
-    query_add_film = "INSERT INTO countryfilms (id_film, id_country) VALUES (%s,%s);"
-
-
+    def add_genre(film_id):
+        for genre in value[2]:
+            cur.execute("SELECT idgenres FROM genres WHERE genre=%s;", (genre,))
+            row = cur.fetchone()
+            if row != None:
+                genreid = row[0]
+            else:
+                query_genre = "INSERT INTO genres (genre) VALUES (%s);"   #добавить жанр в таблицу
+                cur.execute(query_genre, (genre,))
+                genreid = cur.lastrowid
+            cur.execute("INSERT INTO genrefilms (id_films, id_genre) VALUES (%s, %s);", (film_id, genreid))
+    add_country(film_id)      # работает
+    add_genre(film_id)        # работает
+    conn.commit()
     close_db(conn)
-    print("Thanks! Added to film list")
+    print("Film added to film list")
 
 
 def add_favourite(value: tuple):
@@ -210,19 +205,19 @@ a = ("Julia",   "Kut",      "Kutashek", "passw1", "kutashek@ya.ru", "Russia")
 b = ('Nikita',	'Pavlov',	'niknik', 'passw',	'kolbase@mail.ru',	'Bangladesh')
 c = ('Vasya',	'Ganin',	'pikNick',  'passw',	'pikNick@mail.ru',	'Bangladesh')
 d = ('Luci',	'Liu',	'Lucinda23',  'passw',	'Lucinda23@fail.ru',	'Canada')
-film1 = ('Бэтмен: Начало', 2005, 'боевик, фантастика, приключения, драма', 'США, Великобритания')
-film2 = ('Титаник', 1997, 'мелодрама, история, триллер, драма', 'США, Мексика')
+film1 = ('Титаник', 1997, ['мелодрама', 'история', 'триллер', 'драма'], ['США', 'Мексика'])
+film2 = ('Титаник', 2012, ['документальный', 'драма'], ['Россия'])
 
 
 if __name__ == "__main__":
     # deploy_db(config_deploy)      # работает
-    # create_user(a)                # работает
-    # ask_friend((12, 15))          # работает
-    # confirm_friend((12,15))       # работает
-    # reject_friend((12, 15))       # работает
-    # delete_friend((12, 15))       # работает
+    # create_user(b)                # работает
+    # ask_friend((3, 4))          # работает
+    # confirm_friend((3,2))       # работает
+    # reject_friend((3, 2))       # работает
+    # delete_friend((3, 4))       # работает
     # search_film(("Титаник",))      # работает
-    # add_film(film2)     #работает НО записывает в поле несколько стран и жанров!!!!
+    # add_film(film2)               # работает
     # add_favourite((12, 2, "2023-04-11", 3, "для семейного просмотра"))       #работает , если дата-строчка
     # delete_favourite((12, 1))       # работает
     pass
