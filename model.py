@@ -72,6 +72,50 @@ def create_user(person):
         print(f"{e} occured")
 
 
+def search_user(name):
+    """поиск пользователя по никнейму"""
+    conn = create_conn(config)
+    cur = conn.cursor()
+    cur.execute("SELECT name, surname, nickname, country FROM users WHERE nickname=%s;", name)
+    user_data = cur.fetchall()
+    if len(user_data) != 0:
+        close_db(conn)
+        print(user_data)
+        return user_data
+    else:
+        print("No such user")
+        return "No such user"
+
+
+def login_user(name, passw):
+    """Попытка залогиниться"""
+    conn = create_conn(config)
+    cur = conn.cursor()
+    cur.execute("SELECT idusers FROM users WHERE (nickname, passw)=(%s,%s);", (name,passw))
+    user_login = cur.fetchall()
+    if len(user_login) != 0:
+        close_db(conn)
+        return user_login
+    else:
+        return None
+
+
+def show_friends(user_id, status):
+    """Показать всех друзей"""
+    conn = create_conn(config)
+    cur = conn.cursor()
+    cur.execute("""SELECT us.nickname, us.country, fr.status FROM users as us JOIN friends as fr 
+    ON us.idusers=fr.friend_user WHERE fr.main_user=%s AND fr.status=%s;""", (user_id, status))
+    friends = cur.fetchall()
+    if len(friends) != 0:
+        close_db(conn)
+        print(friends)
+        return friends
+    else:
+        close_db(conn)
+        print("No friends yet..")
+        return "No friends yet.."
+
 def ask_friend(values):
     """запросить дружбу
     values кортеж = (отправитель запроса, получатель запроса)
@@ -207,17 +251,19 @@ c = ('Vasya',	'Ganin',	'pikNick',  'passw',	'pikNick@mail.ru',	'Bangladesh')
 d = ('Luci',	'Liu',	'Lucinda23',  'passw',	'Lucinda23@fail.ru',	'Canada')
 film1 = ('Титаник', 1997, ['мелодрама', 'история', 'триллер', 'драма'], ['США', 'Мексика'])
 film2 = ('Титаник', 2012, ['документальный', 'драма'], ['Россия'])
-
+film3 = ('Бэтмен: Начало', 2005, ['боевик', 'фантастика', 'приключения', 'драма'], ['США', 'Великобритания'])
 
 if __name__ == "__main__":
     # deploy_db(config_deploy)      # работает
-    # create_user(b)                # работает
-    # ask_friend((3, 4))          # работает
+    # create_user(d)                # работает
+    # search_user(("Kut",))       # работает
+    # ask_friend((3, 1))          # работает
+    show_friends(3, "confirmed")
     # confirm_friend((3,2))       # работает
     # reject_friend((3, 2))       # работает
     # delete_friend((3, 4))       # работает
     # search_film(("Титаник",))      # работает
-    # add_film(film2)               # работает
+    # add_film(film3)               # работает
     # add_favourite((12, 2, "2023-04-11", 3, "для семейного просмотра"))       #работает , если дата-строчка
     # delete_favourite((12, 1))       # работает
     pass
