@@ -91,9 +91,10 @@ def login_user(name, passw):
     """Попытка залогиниться"""
     conn = create_conn(config)
     cur = conn.cursor()
-    cur.execute("SELECT idusers FROM users WHERE (nickname, passw)=(%s,%s);", (name,passw))
-    user_login = cur.fetchall()
-    if len(user_login) != 0:
+    cur.execute("SELECT idusers, nickname FROM users WHERE (nickname, passw)=(%s,%s);", (name,passw))
+    user_login = cur.fetchone()
+    print(user_login)
+    if user_login is not None:
         close_db(conn)
         return user_login
     else:
@@ -104,7 +105,7 @@ def show_friends(user_id, status):
     """Показать всех друзей"""
     conn = create_conn(config)
     cur = conn.cursor()
-    cur.execute("""SELECT us.nickname, us.country, fr.status FROM users as us JOIN friends as fr 
+    cur.execute("""SELECT us.name, us.surname, us.country, fr.status FROM users as us JOIN friends as fr 
     ON us.idusers=fr.friend_user WHERE fr.main_user=%s AND fr.status=%s;""", (user_id, status))
     friends = cur.fetchall()
     if len(friends) != 0:
@@ -223,6 +224,19 @@ def add_film(value: tuple):
     print("Film added to film list")
 
 
+def show_favourites(value):
+    """показать любимые фильмы"""
+    conn = create_conn(config)
+    cur = conn.cursor()
+    query = "SELECT films.filmname, films.year, fav.rating, fav.add_date, fav.comments from films JOIN favouritefilms as fav ON " \
+            "films.idfilms=fav.film_id WHERE user_id=%s;"
+    cur.execute(query, (value,))
+    favourites = cur.fetchall()
+    close_db(conn)
+    print(favourites)
+    return favourites
+
+
 def add_favourite(value: tuple):
     """добавить любимый фильм
     работает только после добавления в общую таблицу фильмов"""
@@ -230,6 +244,7 @@ def add_favourite(value: tuple):
     cur = conn.cursor()
     query = "INSERT INTO favouritefilms (user_id, film_id, add_date, rating, comments) VALUES (%s,%s,%s,%s,%s);"
     cur.execute(query, value)
+    conn.commit()
     close_db(conn)
     print("Added to favourites")
 
@@ -241,6 +256,7 @@ def delete_favourite(value: tuple):
     cur = conn.cursor()
     query = "DELETE FROM favouritefilms WHERE (user_id, film_id)=(%s,%s);"
     cur.execute(query, value)
+    conn.commit()
     close_db(conn)
     print("Deleted from favourites")
 
@@ -256,14 +272,16 @@ film3 = ('Бэтмен: Начало', 2005, ['боевик', 'фантасти�
 if __name__ == "__main__":
     # deploy_db(config_deploy)      # работает
     # create_user(d)                # работает
+    # login_user("niknik","passw")    # работает
     # search_user(("Kut",))       # работает
     # ask_friend((3, 1))          # работает
-    show_friends(3, "confirmed")
+    # show_friends(3, "confirmed")    # работает
     # confirm_friend((3,2))       # работает
     # reject_friend((3, 2))       # работает
     # delete_friend((3, 4))       # работает
     # search_film(("Титаник",))      # работает
     # add_film(film3)               # работает
-    # add_favourite((12, 2, "2023-04-11", 3, "для семейного просмотра"))       #работает , если дата-строчка
+    # add_favourite((3, 3, "2023-04-11", 5, "что надо"))       #работает , если дата-строчка
+    # show_favourites((1,))
     # delete_favourite((12, 1))       # работает
     pass
