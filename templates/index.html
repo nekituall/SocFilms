@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
-  <h1>Overview</h1>
-  <p>Do you want to <a href="{{ url_for('login') }}">log in?</a>
+  <h1>Welcome to SocFilms - social network for filmlovers</h1>
+<br>
+<br>
+<p><b>Do you want to <a href="{{ url_for('login') }}">log in?</a></b></p>
+<p><b>Or <a href="{{ url_for('signup') }}">Sign up?</a></b></p>
 {% endblock %}

@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block body %}
+
+
+
+<h2>Asked friends</h2>
+<ul>
+{% if asked != list +%}
+{% for user in asked -%}
+    <form><input type="hidden" id="username" name="username" value="{{user}}"> <li>{{ user }} <button type="submit" formmethod="get" formaction="">Add</button>
+        <button type="submit" formmethod="get" formaction="">Reject</button></li></form>
+{% endfor %}
+{% else +%}
+    No requests yet..
+{% endif %}
+</ul>
+<hr/>
+<h2>My friends</h2>
+<ul>
+{% if confirmed != list +%}
+{% for user in confirmed -%}
+    <li>{{ user }}</li>
+{% endfor %}
+    {% else +%}
+    No friends yet..
+{% endif %}
+</ul>
+<hr/>
+<h2>Favourite films</h2>
+<ul>
+{% for film in favourites -%}
+    <li>{{ film }}</li>
+{% endfor %}
+</ul>
+
+
+
+{% endblock %}
