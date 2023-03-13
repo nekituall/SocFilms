@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flask Auth Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <style>
+    table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse; padding: 15px;}
+    </style>
+</head>
+<body style="background-image:url({{url_for('static', filename='marvel.jpg')}});
+    background-repeat: no-repeat;">
+<!-- изображение на заднем фоне за CSS-->
+    <section class="hero is-primary is-fullheight">
+
+        <div class="hero-head">
+            <nav class="navbar">
+                <div class="container">
+
+                    <div id="navbarMenuHeroA" class="navbar-menu">
+                        <div class="navbar-end">
+                            <a href="{{ url_for('index') }}" class="navbar-item">
+                                Home
+                            </a>
+                            <a href="{{ url_for('search_kino') }}" class="navbar-item">
+                                Search Film
+                            </a>
+                            {% block user %}
+                            {% endblock %}
+                            {% block profile %}
+                            {% endblock %}
+                            <a href="{{ url_for('login') }}" class="navbar-item">
+                                Login
+                            </a>
+                            <a href="{{ url_for('signup') }}" class="navbar-item">
+                                Sign Up
+                            </a>
+                            {% block logout %}
+                            {% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+<!--{% with messages = get_flashed_messages() %}-->
+<!--  {% if messages %}-->
+<!--    <ul class=flashes>-->
+<!--    {% for message in messages %}-->
+<!--      <li>{{ message }}</li>-->
+<!--    {% endfor %}-->
+<!--    </ul>-->
+<!--  {% endif %}-->
+<!--{% endwith %}-->
+
+        <div class="hero-body">
+            <div class="container has-text-centered" style="font-size:120%">
+               {% block content %}
+               {% endblock %}
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
