@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block user %}
+<a href="{{ url_for('search_friend') }}" class="navbar-item">Search friend</a>
+{% endblock %}
+{% block profile %}
+<a href="{{ url_for('profile') }}" class="navbar-item">Profile</a>
+{% endblock %}
+
+{% block logout %}
+<a href="{{ url_for('logout') }}" class="navbar-item">Logout</a>
+{% endblock %}
+
+
+{% block content %}
+  <h1>Search user here</h1>
+  {% if error %}
+    <p class=error><strong>Error:</strong> {{ error }}
+  {% endif %}
+  <form method=post>
+    <dl>
+      <dt>Enter friend`s nickname:
+      <dd><input type=text name=username>
+    </dl>
+    <p><input type=submit value=Search>
+  </form>
+
+{% if user +%}
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Surname</th>
+    <th>Nickname</th>
+    <th>Country</th>
+  </tr>
+  <tr>
+      <!--    <tr><form><input type="hidden" value="{{film}}">-->
+    <td>{{ user[0] }}</td>
+    <td>{{ user[1] }}</td>
+    <td>{{ user[2] }}</td>
+    <td>{{ user[3] }}</td>
+<!--    <td><button type="submit" formmethod="get" formaction="/add_favourite">Add</button></td>-->
+  </tr>
+</table>
+{% else +%}
+    User {{ user }} not found..
+{% endif %}
+
+{% endblock %}

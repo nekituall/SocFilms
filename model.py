@@ -1,7 +1,7 @@
 import time
 
 import mysql.connector
-from mysql.connector import Error, IntegrityError
+from mysql.connector import Error
 
 from view import search_api
 
@@ -76,8 +76,8 @@ def search_user(name):
     """поиск пользователя по никнейму"""
     conn = create_conn(config)
     cur = conn.cursor()
-    cur.execute("SELECT name, surname, nickname, country FROM users WHERE nickname=%s;", name)
-    user_data = cur.fetchall()
+    cur.execute("SELECT name, surname, nickname, country FROM users WHERE nickname=%s;", (name,))
+    user_data = cur.fetchone()
     if len(user_data) != 0:
         close_db(conn)
         print(user_data)
@@ -115,7 +115,7 @@ def show_friends(user_id, status):
     else:
         close_db(conn)
         print("No friends yet..")
-        return "No friends yet.."
+        return None
 
 def ask_friend(values):
     """запросить дружбу
@@ -164,17 +164,22 @@ def delete_friend(values):
 # ROW_COUNT() для тестов
 
 
-def search_film(name:tuple) -> list:
+def search_film(name) -> list:
     """ищем фильм в базе данных, если нету то по АПИ"""
     conn = create_conn(config)
     cur = conn.cursor()
-    cur.execute("SELECT filmname, year FROM films WHERE filmname=%s;", name)
+    query = """SELECT filmname, year, genre, countryname FROM films f JOIN genrefilms gs ON 
+    f.idfilms=gs.id_films JOIN genres g ON gs.id_genre=g.idgenres JOIN countryfilms cs ON f.idfilms=cs.id_film 
+    JOIN countries c ON cs.id_country=c.idcountries WHERE filmname=%s GROUP BY f.idfilms;"""
+    cur.execute(query, (name,))
+    # чтобы вывести список похожий на апи с одним жанром и страной
+    # "SELECT films.filmname, films.year,  FROM films WHERE filmname=%s;"
     res = cur.fetchall()
     print(res)
     if len(res) == 0:
         print("api")
         #запрос к АПИ
-        data = search_api(name[0])
+        data = search_api(name)
         print(data)
         return data
     else:
@@ -273,7 +278,7 @@ if __name__ == "__main__":
     # deploy_db(config_deploy)      # работает
     # create_user(d)                # работает
     # login_user("niknik","passw")    # работает
-    # search_user(("Kut",))       # работает
+    search_user("nekituall")       # работает
     # ask_friend((3, 1))          # работает
     # show_friends(3, "confirmed")    # работает
     # confirm_friend((3,2))       # работает

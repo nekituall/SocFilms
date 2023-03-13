@@ -1,8 +1,13 @@
-{% extends "layout.html" %}
-{% block body %}
-  <h1>Welcome to SocFilms - social network for filmlovers</h1>
+{% extends "base.html" %}
+{% block content %}
 <br>
 <br>
-<p><b>Do you want to <a href="{{ url_for('login') }}">log in?</a></b></p>
-<p><b>Or <a href="{{ url_for('signup') }}">Sign up?</a></b></p>
+<h1 style="font-size:160%;">Welcome to SocFilms - social network for filmlovers</h1>
+<br>
+<p>Here you can easily search new films, add favourites and of course share with friends.
+<br>Enjoy!</p>
+<br>
+<br>
+<p>Do you want to <a href="{{ url_for('login') }}"><b><em>Log in?</em></b></a></p>
+<p>OR <a href="{{ url_for('signup') }}"><b><em>Sign up?</em></b></a></p>
 {% endblock %}

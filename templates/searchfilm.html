@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block user %}
+<a href="{{ url_for('search_friend') }}" class="navbar-item">Search friend</a>
+{% endblock %}
+{% block profile %}
+<a href="{{ url_for('profile') }}" class="navbar-item">Profile</a>
+{% endblock %}
+
+{% block logout %}
+<a href="{{ url_for('logout') }}" class="navbar-item">Logout</a>
+{% endblock %}
+
+<h1>Search new film by name easily</h1>
+<br>
+{% block content %}
+<form method=post>
+    <dl>
+      <dt>Enter filmname here:
+      <dd><input type=text name=filmname required>
+    </dl>
+    <p><input type=submit value=Search>
+  </form>
+
+{% if films +%}
+<table>
+  <tr>
+    <th>Film</th>
+    <th>Year</th>
+    <th>Genre</th>
+    <th>Country</th>
+    <th>to Favourites</th>
+  </tr>
+{% for film in films -%}
+  <tr><form action="/add_favourites"><input type="hidden" name="{{film}}">
+<!--    <tr><form><input type="hidden" value="{{film}}">-->
+    <td>{{ film[0] }}</td>
+    <td>{{ film[1] }}</td>
+    <td>{{ film[2] }}</td>
+    <td>{{ film[3] }}</td>
+    <td><button type="submit" formmethod="get" formaction="/add_favourite">Add</button></td>
+<!--    <td><button type="submit" formmethod="get" formaction="/add_favourite">Add</button></td>-->
+      </form>
+  </tr>
+  {% endfor %}
+</table>
+{% else +%}
+    No such films yet..
+{% endif %}
+
+{% endblock %}

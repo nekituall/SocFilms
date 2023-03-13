@@ -1,11 +1,24 @@
-{% extends "layout.html" %}
-{% block body %}
+{% extends "base.html" %}
 
+{% block user %}
+<a href="{{ url_for('search_friend') }}" class="navbar-item">Search friend</a>
+{% endblock %}
+{% block profile %}
+<a href="{{ url_for('profile') }}" class="navbar-item">Profile</a>
+{% endblock %}
 
+{% block logout %}
+<a href="{{ url_for('logout') }}" class="navbar-item">Logout</a>
+{% endblock %}
 
-<h2>Asked friends</h2>
+{% block content %}
+<div style="text-align:left"><h1 style="font"><b>{{user}}</b>, welcome and enjoy!!!</h1></div>
+<br>
+<br>
+<h1>Asked friends</h1>
+<br>
 <ul>
-{% if asked != list +%}
+{% if asked +%}
 {% for user in asked -%}
     <form><input type="hidden" id="username" name="username" value="{{user}}"> <li>{{ user }} <button type="submit" formmethod="get" formaction="">Add</button>
         <button type="submit" formmethod="get" formaction="">Reject</button></li></form>
@@ -15,9 +28,10 @@
 {% endif %}
 </ul>
 <hr/>
-<h2>My friends</h2>
+<h1>My friends</h1>
+<br>
 <ul>
-{% if confirmed != list +%}
+{% if confirmed +%}
 {% for user in confirmed -%}
     <li>{{ user }}</li>
 {% endfor %}
@@ -26,7 +40,8 @@
 {% endif %}
 </ul>
 <hr/>
-<h2>Favourite films</h2>
+<h1>Favourite films</h1>
+<br>
 <ul>
 {% for film in favourites -%}
     <li>{{ film }}</li>
