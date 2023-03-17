@@ -4,17 +4,23 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Flask Auth Example</title>
+    {% block title %}<title>SocFilms</title>{% endblock %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <link rel="icon" type="image/x-icon" href="/static/icon.ico">
     <style>
-    table, th, td {
-  border: 1px solid black;
+    table, th, td { align: center; border-bottom: 2px solid #ddd;
+  text-align: center; vertical-align: middle;
   border-collapse: collapse; padding: 15px;}
+  tr:hover {background-color: coral;}
+  td { color: #000000;}
+  table { overflow-x: auto; margin: auto;}
+  button { cursor: pointer; }
     </style>
 </head>
-<body style="background-image:url({{url_for('static', filename='marvel.jpg')}});
-    background-repeat: no-repeat;">
-<!-- изображение на заднем фоне за CSS-->
+<body>
+<!-- изображение на заднем фоне за CSS  -->
+<!-- style="background-image:url({{url_for('static', filename='marvel.jpg')}});-->
+<!--    background-repeat: no-repeat;"-->
     <section class="hero is-primary is-fullheight">
 
         <div class="hero-head">
@@ -33,12 +39,10 @@
                             {% endblock %}
                             {% block profile %}
                             {% endblock %}
-                            <a href="{{ url_for('login') }}" class="navbar-item">
-                                Login
-                            </a>
-                            <a href="{{ url_for('signup') }}" class="navbar-item">
-                                Sign Up
-                            </a>
+                            {% block login %}
+                            {% endblock %}
+                            {% block signup %}
+                            {% endblock %}
                             {% block logout %}
                             {% endblock %}
                         </div>
@@ -58,6 +62,7 @@
 
         <div class="hero-body">
             <div class="container has-text-centered" style="font-size:120%">
+
                {% block content %}
                {% endblock %}
             </div>

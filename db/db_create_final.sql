@@ -38,7 +38,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `socfilms_db`.`films` (
   `idfilms` INT NOT NULL AUTO_INCREMENT,
-  `filmname` VARCHAR(45) NOT NULL,
+  `filmname` VARCHAR(100) NOT NULL,
   `year` YEAR NOT NULL,
   PRIMARY KEY (`idfilms`))
 ENGINE = InnoDB;
@@ -57,12 +57,10 @@ CREATE TABLE IF NOT EXISTS `socfilms_db`.`favouritefilms` (
   PRIMARY KEY (`idfavouritefilms`),
   INDEX `users_idx` (`user_id` ASC) VISIBLE,
   INDEX `films_idx` (`film_id` ASC) VISIBLE,
-  CONSTRAINT `users`
     FOREIGN KEY (`user_id`)
     REFERENCES `socfilms_db`.`users` (`idusers`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `films`
     FOREIGN KEY (`film_id`)
     REFERENCES `socfilms_db`.`films` (`idfilms`)
     ON DELETE NO ACTION
@@ -81,12 +79,10 @@ CREATE TABLE IF NOT EXISTS `socfilms_db`.`friends` (
   PRIMARY KEY (`idfriends`),
   INDEX `main_idx` (`main_user` ASC) VISIBLE,
   INDEX `friend_idx` (`friend_user` ASC) VISIBLE,
-  CONSTRAINT `main`
     FOREIGN KEY (`main_user`)
     REFERENCES `socfilms_db`.`users` (`idusers`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `friend`
     FOREIGN KEY (`friend_user`)
     REFERENCES `socfilms_db`.`users` (`idusers`)
     ON DELETE NO ACTION
@@ -115,12 +111,10 @@ CREATE TABLE IF NOT EXISTS `socfilms_db`.`countryfilms` (
   PRIMARY KEY (`idcountryfilms`),
   INDEX `film_idx` (`id_film` ASC) VISIBLE,
   INDEX `country_idx` (`id_country` ASC) VISIBLE,
-  CONSTRAINT `film`
     FOREIGN KEY (`id_film`)
     REFERENCES `socfilms_db`.`films` (`idfilms`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `country`
     FOREIGN KEY (`id_country`)
     REFERENCES `socfilms_db`.`countries` (`idcountries`)
     ON DELETE NO ACTION

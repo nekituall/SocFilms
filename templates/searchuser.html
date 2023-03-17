@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}<title>SocFilms - Search friend</title>{% endblock %}
+
 {% block user %}
 <a href="{{ url_for('search_friend') }}" class="navbar-item">Search friend</a>
 {% endblock %}
@@ -13,37 +15,42 @@
 
 
 {% block content %}
-  <h1>Search user here</h1>
+  <h1 style="font-size:160%;">Search a friend here easily</h1>
+  <br>
+  <br>
   {% if error %}
     <p class=error><strong>Error:</strong> {{ error }}
   {% endif %}
   <form method=post>
     <dl>
-      <dt>Enter friend`s nickname:
+      <dt>Enter nickname:
       <dd><input type=text name=username>
     </dl>
     <p><input type=submit value=Search>
   </form>
-
+<br>
 {% if user +%}
-<table>
+<table style="align:center;">
   <tr>
     <th>Name</th>
     <th>Surname</th>
     <th>Nickname</th>
     <th>Country</th>
+    <th>To Friends</th>
   </tr>
   <tr>
       <!--    <tr><form><input type="hidden" value="{{film}}">-->
-    <td>{{ user[0] }}</td>
     <td>{{ user[1] }}</td>
     <td>{{ user[2] }}</td>
     <td>{{ user[3] }}</td>
-<!--    <td><button type="submit" formmethod="get" formaction="/add_favourite">Add</button></td>-->
+    <td>{{ user[4] }}</td>
+    <td><form><input type="hidden" id="username" name="username" value="{{user[0]}}"><button type="submit" formmethod="get" formaction="/ask_friend">Ask</button></form></td>
   </tr>
 </table>
+
 {% else +%}
-    User {{ user }} not found..
+<br/>
+    Not found..
 {% endif %}
 
 {% endblock %}

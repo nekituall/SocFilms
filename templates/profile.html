@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}<title>SocFilms - Your Profile</title>{% endblock %}
+
 {% block user %}
 <a href="{{ url_for('search_friend') }}" class="navbar-item">Search friend</a>
 {% endblock %}
@@ -12,42 +14,88 @@
 {% endblock %}
 
 {% block content %}
-<div style="text-align:left"><h1 style="font"><b>{{user}}</b>, welcome and enjoy!!!</h1></div>
+
+<h1 style="font-size:160%;"><b>{{user}}</b>, welcome and enjoy!!!</h1>
 <br>
 <br>
-<h1>Asked friends</h1>
+<h2 style="font-size:140%;">Asked friends</h2>
 <br>
-<ul>
-{% if asked +%}
-{% for user in asked -%}
-    <form><input type="hidden" id="username" name="username" value="{{user}}"> <li>{{ user }} <button type="submit" formmethod="get" formaction="">Add</button>
-        <button type="submit" formmethod="get" formaction="">Reject</button></li></form>
+{% if asked -%}
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Surname</th>
+    <th>Country</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+{% for ask in asked %}
+  <tr>
+    <td>{{ ask[1] }}</td>
+    <td>{{ ask[2] }}</td>
+    <td>{{ ask[3] }}</td>
+    <td>{{ ask[4] }}</td>
+    <td>
+      <form method="get" action="/confirm_friend"><input type="hidden" id="conf_user" name="conf_user" value="{{ ask[0] }}">
+        <button type="submit">Confirm</button></form> <form method="get" action="/reject_friend"><input type="hidden" id="rej_user" name="rej_user" value="{{ ask[0] }}">
+        <button type="submit">Reject</button></form>
+    </td>
+  </tr>
 {% endfor %}
-{% else +%}
+</table>
+{% else -%}
     No requests yet..
 {% endif %}
-</ul>
+
 <hr/>
-<h1>My friends</h1>
+<h2 style="font-size:140%;">My friends</h2>
 <br>
-<ul>
+<br>
 {% if confirmed +%}
-{% for user in confirmed -%}
-    <li>{{ user }}</li>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Surname</th>
+    <th>Country</th>
+    <th>Status</th>
+  </tr>
+{% for conf in confirmed %}
+  <tr>
+    <td>{{ conf[1] }}</td>
+    <td>{{ conf[2] }}</td>
+    <td>{{ conf[3] }}</td>
+    <td>{{ conf[4] }}</td>
+  </tr>
 {% endfor %}
-    {% else +%}
+</table>
+{% else -%}
     No friends yet..
 {% endif %}
-</ul>
+
 <hr/>
-<h1>Favourite films</h1>
+<h2 style="font-size:140%;">Favourite films</h2>
 <br>
-<ul>
-{% for film in favourites -%}
-    <li>{{ film }}</li>
+{% if favourites %}
+<table>
+  <tr>
+    <th>Film</th>
+    <th>Year</th>
+    <th>Rating</th>
+    <th>Viewed on</th>
+    <th>Comments</th>
+  </tr>
+{% for film in favourites %}
+  <tr>
+    <td>{{ film[0] }}</td>
+    <td>{{ film[1] }}</td>
+    <td>{{ film[2] }}</td>
+    <td>{{ film[3] }}</td>
+    <td>{{ film[4] }}</td>
+  </tr>
+
 {% endfor %}
-</ul>
-
-
-
+</table>
+{% else %}
+No favourites yet..
+{% endif %}
 {% endblock %}

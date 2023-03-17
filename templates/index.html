@@ -1,4 +1,14 @@
 {% extends "base.html" %}
+{% block title %}<title>SocFilms - Homepage</title>{% endblock %}
+
+{% block login %}
+<a href="{{ url_for('login') }}" class="navbar-item">Login</a>
+{% endblock %}
+{% block signup %}
+<a href="{{ url_for('signup') }}" class="navbar-item">Sign Up</a>
+{% endblock %}
+
+
 {% block content %}
 <br>
 <br>

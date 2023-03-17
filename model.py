@@ -3,7 +3,7 @@ import time
 import mysql.connector
 from mysql.connector import Error
 
-from view import search_api
+from api import search_api
 
 #для развертки БД
 config_deploy = {
@@ -108,8 +108,8 @@ def show_friends(user_id, status):
     """Показать всех друзей"""
     conn = create_conn(config)
     cur = conn.cursor()
-    cur.execute("""SELECT us.name, us.surname, us.country, fr.status FROM users as us JOIN friends as fr 
-    ON us.idusers=fr.main_user WHERE fr.friend_user=%s AND fr.status=%s UNION SELECT us.name, us.surname, us.country, fr.status FROM users as us JOIN friends as fr 
+    cur.execute("""SELECT us.idusers, us.name, us.surname, us.country, fr.status FROM users as us JOIN friends as fr 
+    ON us.idusers=fr.main_user WHERE fr.friend_user=%s AND fr.status=%s UNION SELECT us.idusers, us.name, us.surname, us.country, fr.status FROM users as us JOIN friends as fr 
     ON us.idusers=fr.friend_user WHERE fr.main_user=%s  AND fr.status=%s;""", (user_id, status, user_id, status))
     # cur.execute("""SELECT us.name, us.surname, us.country, fr.status FROM users as us JOIN friends as fr
     # ON us.idusers=fr.main_user WHERE fr.friend_user=%s AND fr.status=%s;""", (user_id, status))
@@ -176,15 +176,15 @@ def delete_friend(values):
 
 def search_film(name):
     """ищем фильм в базе данных, сравниваем с АПИ, если в базе нет, то добавляем его"""
-
     conn = create_conn(config)
     cur = conn.cursor()
     query = """SELECT filmname, year, (SELECT group_concat(genre SEPARATOR ',') FROM genres g JOIN genrefilms gs ON g.idgenres=gs.id_genre WHERE gs.id_films = f.idfilms) AS genre,
     (SELECT group_concat(countryname SEPARATOR ',') FROM countries c JOIN countryfilms cs ON c.idcountries=cs.id_country WHERE cs.id_film = f.idfilms) AS countryname FROM films f JOIN genrefilms gs ON
         f.idfilms=gs.id_films JOIN genres g ON gs.id_genre=g.idgenres JOIN countryfilms cs ON f.idfilms=cs.id_film
-        JOIN countries c ON cs.id_country=c.idcountries WHERE filmname=%s GROUP BY f.idfilms;"""
-    cur.execute(query, (name,))
+        JOIN countries c ON cs.id_country=c.idcountries WHERE filmname LIKE %s GROUP BY f.idfilms;"""
+    cur.execute(query, ("%" + name + "%",))
     db_data = cur.fetchall()
+    # print(db_data)
     api_data = search_api(name)
 
     db_final = []
@@ -201,9 +201,18 @@ def search_film(name):
     # print(new_data)
 
     for data in new_data:
-        print(data)
         add_film(data)
 
+    conn = create_conn(config)
+    cur = conn.cursor()
+    query_all = """SELECT idfilms, filmname, year, (SELECT group_concat(genre SEPARATOR ',') FROM genres g JOIN genrefilms gs ON g.idgenres=gs.id_genre WHERE gs.id_films = f.idfilms) AS genre,
+        (SELECT group_concat(countryname SEPARATOR ',') FROM countries c JOIN countryfilms cs ON c.idcountries=cs.id_country WHERE cs.id_film = f.idfilms) AS countryname FROM films f JOIN genrefilms gs ON
+            f.idfilms=gs.id_films JOIN genres g ON gs.id_genre=g.idgenres JOIN countryfilms cs ON f.idfilms=cs.id_film
+            JOIN countries c ON cs.id_country=c.idcountries WHERE filmname LIKE %s GROUP BY f.idfilms;"""
+    cur.execute(query_all, ("%" + name + "%",))
+    all_data = cur.fetchall()
+    print(all_data)
+    return all_data
 
     #СТАРАЯ ВЕРСИЯ поиска по апи
 
@@ -284,7 +293,7 @@ def show_favourites(value):
     return favourites
 
 
-def add_favourite(value: tuple):
+def add_favourites(value: tuple):
     """добавить любимый фильм
     работает только после добавления в общую таблицу фильмов"""
     conn = create_conn(config)
@@ -296,7 +305,7 @@ def add_favourite(value: tuple):
     print("Added to favourites")
 
 
-def delete_favourite(value: tuple):
+def delete_favourites(value: tuple):
     """Удалить любимый фильм
     удаляется запись из таблицы favorite_films"""
     conn = create_conn(config)
@@ -322,13 +331,13 @@ if __name__ == "__main__":
     # login_user("niknik","passw")    # работает
     # search_user("nekituall")       # работает
     # ask_friend((3, 1))          # работает
-    # show_friends(2, "confirmed")    # работает
+    # show_friends(1, "asked")    # работает
     # confirm_friend((3,2))       # работает
     # reject_friend((3, 2))       # работает
     # delete_friend((3, 4))       # работает
-    search_film("Титаник")      # работает
+    # search_film("Титаник")      # работает
     # add_film(film1)               # работает
     # add_favourite((3, 3, "2023-04-11", 5, "что надо"))       #работает , если дата-строчка
-    # show_favourites((1,))
+    # show_favourites(1)
     # delete_favourite((12, 1))       # работает
     pass

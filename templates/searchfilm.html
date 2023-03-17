@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}<title>SocFilms - Search film</title>{% endblock %}
+
 {% block user %}
 <a href="{{ url_for('search_friend') }}" class="navbar-item">Search friend</a>
 {% endblock %}
@@ -11,9 +13,14 @@
 <a href="{{ url_for('logout') }}" class="navbar-item">Logout</a>
 {% endblock %}
 
-<h1>Search new film by name easily</h1>
-<br>
+
 {% block content %}
+<h1 style="font-size:160%;">Search new film by name easily</h1>
+<br>
+<br>
+{% if error %}
+  <p class=error><strong>Error:</strong> {{ error }}
+{% endif %}
 <form method=post>
     <dl>
       <dt>Enter filmname here:
@@ -29,18 +36,17 @@
     <th>Year</th>
     <th>Genre</th>
     <th>Country</th>
-    <th>to Favourites</th>
+    <th>Favourites</th>
   </tr>
 {% for film in films -%}
-  <tr><form action="/add_favourites"><input type="hidden" name="{{film}}">
-<!--    <tr><form><input type="hidden" value="{{film}}">-->
-    <td>{{ film[0] }}</td>
+  <tr>
     <td>{{ film[1] }}</td>
     <td>{{ film[2] }}</td>
     <td>{{ film[3] }}</td>
-    <td><button type="submit" formmethod="get" formaction="/add_favourite">Add</button></td>
-<!--    <td><button type="submit" formmethod="get" formaction="/add_favourite">Add</button></td>-->
-      </form>
+    <td>{{ film[4] }}</td>
+    <td>
+      <form method="get" action="/add_favourite"><input type="hidden" id="idfilm" name="idfilm" value="{{ film[0] }}">
+        <button type="submit">ADD</button></form></td>
   </tr>
   {% endfor %}
 </table>

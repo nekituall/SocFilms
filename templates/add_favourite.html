@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}<title>SocFilms - Add favourite film</title>{% endblock %}
+
+{% block user %}
+<a href="{{ url_for('search_friend') }}" class="navbar-item">Search friend</a>
+{% endblock %}
+{% block profile %}
+<a href="{{ url_for('profile') }}" class="navbar-item">Profile</a>
+{% endblock %}
+
+{% block logout %}
+<a href="{{ url_for('logout') }}" class="navbar-item">Logout</a>
+{% endblock %}
+
+{% block content %}
+<h1 style="font-size:160%;">Add your favourite film easily</h1>
+  <br>
+  <br>
+  {% if error %}
+    <p class=error><strong>Error:</strong> {{ error }}
+  {% endif %}
+
+  <form method=post>
+    <dl>
+      <dt>Choose view date:
+      <dd><input type=date id=date name=date required>
+      <dt>Choose rating(0-10):
+      <dd><input type="number" id=rating name=rating min="1" max="10" required>
+      <dt>Enter review comments(not necessary):
+      <dd><textarea name=comment style="height:205px; width:330px;"></textarea>
+    </dl>
+    <p><input type=submit value="Add favourite">
+  </form>
+<br>
+{% endblock %}

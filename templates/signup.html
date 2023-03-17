@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-<h1>Sign in and enjoy all functions easily</h1>
+{% block title %}<title>SocFilms - Sign up</title>{% endblock %}
+
+<h1 style="font-size:160%;">Sign up and enjoy all functions easily</h1>
 <br>
 {% block content %}
 <h2>Enter your data here:</h2>
@@ -14,9 +16,9 @@
       <dt>Nickname:
       <dd><input type=text name=nickname required>
       <dt>Password:
-      <dd><input type=text name=passw required>
+      <dd><input type=password name=passw required>
       <dt>Email:
-      <dd><input type=text name=email required>
+      <dd><input type=email name=email required>
       <dt>Country:
       <dd><input type=text name=country required>
     </dl>

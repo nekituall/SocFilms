@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, session, redirect, url_for, flash
-from model import login_user, show_friends, show_favourites, search_film, create_user, search_user, confirm_friend
-
+from model import login_user, show_friends, show_favourites, search_film, create_user, search_user, confirm_friend, \
+    ask_friend, add_favourites
 
 app = Flask(__name__)
 
@@ -19,10 +19,11 @@ def profile():
         asked_friends = show_friends(session["username"][0], "asked")
         print(asked_friends)
         confirmed_friends = show_friends(session["username"][0], "confirmed")
+        #РЕШЕНО! проблема с отображением друзей у обоих пользователей
         print(confirmed_friends)
         favourites = show_favourites(session["username"][0])
-        # если возвращается None - то в шаблоне ошибка
-        return render_template('profile.html', user=session["username"][1],asked=asked_friends, confirmed=confirmed_friends, favourites=favourites)
+        #РЕШЕНО! если возвращается None - то в шаблоне ошибка
+        return render_template('profile.html', user=session["username"][1], asked=asked_friends, confirmed=confirmed_friends, favourites=favourites)
     else:
         return redirect(url_for('login'))
 
@@ -36,7 +37,7 @@ def login():
         if login_try != None:
             flash('You were successfully logged in')
             session["username"] = login_try
-            print(login_try)
+            # print(login_try)
             return redirect(url_for('profile'))
         else:
             error = 'Please check you nickname/password'
@@ -50,6 +51,7 @@ def login():
 @app.route('/signup', methods= ["GET", "POST"])
 def signup():
     if "username" in session:
+        flash("You already logged in!")
         return redirect(url_for('profile'))
     if request.method == "POST" and request.form["name"] and request.form["surname"] and request.form["nickname"] and \
             request.form["passw"] and request.form["email"] and request.form["country"]:
@@ -70,15 +72,10 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route("/about")
-def about():
-    return render_template("about.html")
-
-
 @app.route("/searchfilm", methods=["GET", "POST"])
 def search_kino():
     if "username" in session:
-        if request.method == 'POST' and request.form["filmname"]:
+        if request.method == 'POST':
             res = search_film(request.form["filmname"])
             return render_template("searchfilm.html", films=res)
         else:
@@ -95,17 +92,66 @@ def search_kino():
 def search_friend():
     if "username" in session:
         if request.method == "POST":
-            res = search_user(request.form["username"])
-            return render_template("searchuser.html", user=res)
+            if len(request.form["username"]) > 1:
+                res = search_user(request.form["username"])
+                return render_template("searchuser.html", user=res)
+            else:
+                return render_template("searchuser.html", error="Please check nickname")
         return render_template("searchuser.html")
 
-@app.route("/add_favourite")
+
+@app.route("/ask_friend", methods=["GET"])
+def ask_for_friend():
+    if "username" in session:
+        main = session["username"][0]
+        # print(main)
+        fr = request.args.get("username")
+        # print(fr)
+        if int(main) != int(fr):
+            ask_friend((main, fr))
+        else:
+            error = "You couldn`t add yourself"
+            return render_template("searchuser.html", error=error)
+        return redirect(url_for('profile'))
+    else:
+        return redirect(url_for('index'), code=405)
+
+
+@app.route("/add_favourite", methods=["GET", "POST"])
 def add_favourite():
-    if request.method == "GET":
-        print(request.query_string.split())
-        return "Added!"
-        # confirm_friend(1)
-        # return render_template("about.html")
+    if "username" in session:
+        if request.method == "GET":
+            session["idfilm"] = request.args["idfilm"]
+            return render_template("add_favourite.html")
+        #     print(request.query_string)
+        #     # print(request.args.get("filmname"))
+        #     if "filmid" in request.args:
+        #         data = request.args["filmgenre"]
+        #         # print((data['filmid']))
+        #         # print((data['filmyear']))
+        #         # print((data['filmgenre']))
+        #         # print((data['filmcountry']))
+        #         # print(data['filmcountry'].strip("[]' "))
+        if request.method == "POST":
+            # print(request.form["date"])
+            add_favourites((session["username"][0], session["idfilm"], request.form["date"], request.form["rating"],
+                          request.form["comment"]))
+            flash("Added!")
+            return redirect(url_for("profile"))
+        else:
+            return None
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route("/confirm_friend")
+def confirm():
+    pass
+
+@app.route("/reject_friend")
+def reject():
+    pass
+
 
 
 if __name__ == "__main__":
