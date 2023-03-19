@@ -97,6 +97,10 @@ def search_friend():
                 return render_template("searchuser.html", user=res)
             else:
                 return render_template("searchuser.html", error="Please check nickname")
+        if "error" in session:
+            error = session["error"]
+            del session["error"]
+            return render_template("searchuser.html", error=error)
         return render_template("searchuser.html")
 
 
@@ -110,8 +114,8 @@ def ask_for_friend():
         if int(main) != int(fr):
             ask_friend((main, fr))
         else:
-            error = "You couldn`t add yourself"
-            return render_template("searchuser.html", error=error)
+            session["error"] = "You couldn`t add yourself"
+            return redirect(url_for("search_friend"))
         return redirect(url_for('profile'))
     else:
         return redirect(url_for('index'), code=405)
