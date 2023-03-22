@@ -2,10 +2,33 @@
 
 {% block title %}<title>SocFilms - Sign up</title>{% endblock %}
 
+{% block login %}
+<a href="{{ url_for('login') }}" class="navbar-item">Login</a>
+{% endblock %}
+{% block signup %}
+<a href="{{ url_for('signup') }}" class="navbar-item">Sign Up</a>
+{% endblock %}
+
+{% block content %}
+
+<!--  {% if error %}-->
+<!--    <p class=error><strong>Error:</strong> {{ error }}-->
+<!--  {% endif %}-->
 <h1 style="font-size:160%;">Sign up and enjoy all functions easily</h1>
 <br>
-{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for category, message in messages %}
+      <li class="{{ category }}">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+<br>
 <h2>Enter your data here:</h2>
+
+
 <br>
 <form method=post>
     <dl>

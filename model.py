@@ -125,7 +125,7 @@ def show_friends(user_id, status):
         print("No friends yet..")
         return None
 
-# def ask_friend(values: tuple):
+
 def ask_friend(values):
     """запросить дружбу
     values кортеж = (отправитель запроса, получатель запроса)
@@ -144,7 +144,7 @@ def confirm_friend(values):
     """одобрить дружбу"""
     conn = create_conn(config)
     cur = conn.cursor()
-    query = ("UPDATE friends SET status='confirmed' WHERE (main_user, friend_user)=(%s,%s);")
+    query = ("UPDATE friends SET status='confirmed' WHERE ( friend_user, main_user)=(%s,%s);")
     cur.execute(query, values)
     conn.commit()
     close_db(conn)
@@ -155,7 +155,7 @@ def reject_friend(values):
     """отклонить дружбу"""
     conn = create_conn(config)
     cur = conn.cursor()
-    query = ("UPDATE friends SET status='rejected' WHERE (main_user, friend_user)=(%s,%s);")
+    query = ("UPDATE friends SET status='rejected' WHERE (friend_user, main_user)=(%s,%s);")
     cur.execute(query, values)
     conn.commit()
     close_db(conn)
@@ -195,13 +195,12 @@ def search_film(name):
         db_final.append(db)
     # print(db_final)
 
-    api_final = [list(api) for api in api_data]
-    # print(api_final)
-    new_data = [x for x in api_final if x not in db_final]  # это данные, которых нету в базе
-    # print(new_data)
-
-    for data in new_data:
-        add_film(data)
+    if api_data is not None:
+        api_final = [list(api) for api in api_data]
+        # print(api_final)
+        new_data = [x for x in api_final if x not in db_final]  # это данные, которых нету в базе
+        for data in new_data:
+            add_film(data)
 
     conn = create_conn(config)
     cur = conn.cursor()
@@ -317,7 +316,7 @@ def delete_favourites(value: tuple):
     print("Deleted from favourites")
 
 
-a = ("Julia",   "Kut",      "Kutashek", "passw1", "kutashek@ya.ru", "Russia")
+a = ("Julia",   "Kut",      "Kutashek", "passw", "kutashek@ya.ru", "Russia")
 b = ('Nikita',	'Pavlov',	'niknik', 'passw',	'kolbase@mail.ru',	'Bangladesh')
 c = ('Vasya',	'Ganin',	'pikNick',  'passw',	'pikNick@mail.ru',	'Bangladesh')
 d = ('Luci',	'Liu',	'Lucinda23',  'passw',	'Lucinda23@fail.ru',	'Canada')
@@ -326,7 +325,7 @@ film2 = ('Титаник', 2012, ['документальный', 'драма'],
 film3 = ('Бэтмен: Начало', 2005, ['боевик', 'фантастика', 'приключения', 'драма'], ['США', 'Великобритания'])
 
 if __name__ == "__main__":
-    # deploy_db(config_deploy)      # работает
+    deploy_db(config_deploy)      # работает
     # create_user(d)                # работает
     # login_user("niknik","passw")    # работает
     # search_user("nekituall")       # работает

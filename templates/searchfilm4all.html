@@ -2,6 +2,14 @@
 
 {% block title %}<title>SocFilms - Search film</title>{% endblock %}
 
+{% block login %}
+<a href="{{ url_for('login') }}" class="navbar-item">Login</a>
+{% endblock %}
+{% block signup %}
+<a href="{{ url_for('signup') }}" class="navbar-item">Sign Up</a>
+{% endblock %}
+
+
 <h1 style="font-size:160%;">Search a new film by name easily</h1>
 <br>
 <br>

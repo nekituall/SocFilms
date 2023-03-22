@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, session, redirect, url_for, flash
 from model import login_user, show_friends, show_favourites, search_film, create_user, search_user, confirm_friend, \
-    ask_friend, add_favourites
+    ask_friend, reject_friend, add_favourites
+from werkzeug.security import generate_password_hash, check_password_hash  # дописать хэширование паролей
 
 app = Flask(__name__)
 
@@ -48,10 +49,10 @@ def login():
         return render_template('login.html', error=error)
 
 
-@app.route('/signup', methods= ["GET", "POST"])
+@app.route('/signup', methods = ["GET", "POST"])
 def signup():
     if "username" in session:
-        flash("You already logged in!")
+        flash("You already logged in!", "success")
         return redirect(url_for('profile'))
     if request.method == "POST" and request.form["name"] and request.form["surname"] and request.form["nickname"] and \
             request.form["passw"] and request.form["email"] and request.form["country"]:
@@ -150,12 +151,36 @@ def add_favourite():
 
 @app.route("/confirm_friend")
 def confirm():
-    pass
+    if "username" in session:
+        if request.method == "GET" and request.args.get("conf_user"):
+            print(session["username"][0])
+            print(request.args.get("conf_user"))
+            confirm_friend((session["username"][0], int(request.args.get("conf_user"))))
+            flash("Friend confirmed successfully", "success")
+            return redirect(url_for("profile"))
 
 @app.route("/reject_friend")
 def reject():
-    pass
+    if "username" in session:
+        if request.method == "GET" and request.args.get("rej_user"):
+            print(session["username"][0])
+            print(request.args.get("rej_user"))
+            reject_friend((session["username"][0], int(request.args.get("rej_user"))))
+            flash("Friend rejected successfully", "success")
+            return redirect(url_for("profile"))
 
+
+@app.route("/view_friend")
+def view_friend():
+    if "username" in session:
+        if request.method == "GET" and request.args.get("iduser"):
+            print(session["username"][0])
+            print(request.args.get("iduser"))
+            favourites = show_favourites(request.args.get("iduser"))
+            # reject_friend((session["username"][0], int(request.args.get("iduser"))))
+            # # flash("Friend rejected successfully", "success")
+            # return "viewed"
+            return render_template("view_friend.html", favourites=favourites, user = session["username"][1])
 
 
 if __name__ == "__main__":

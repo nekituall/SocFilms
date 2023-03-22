@@ -17,6 +17,15 @@
 
 <h1 style="font-size:160%;"><b>{{user}}</b>, welcome and enjoy!!!</h1>
 <br>
+<!--{% with messages = get_flashed_messages(with_categories=true) %}-->
+<!--  {% if messages %}-->
+<!--    <ul class=flashes>-->
+<!--    {% for category, message in messages %}-->
+<!--      <li class="{{ category }}">{{ message }}</li>-->
+<!--    {% endfor %}-->
+<!--    </ul>-->
+<!--  {% endif %}-->
+<!--{% endwith %}-->
 <br>
 <h2 style="font-size:140%;">Asked friends</h2>
 <br>
@@ -58,6 +67,7 @@
     <th>Surname</th>
     <th>Country</th>
     <th>Status</th>
+    <th>Action</th>
   </tr>
 {% for conf in confirmed %}
   <tr>
@@ -65,6 +75,10 @@
     <td>{{ conf[2] }}</td>
     <td>{{ conf[3] }}</td>
     <td>{{ conf[4] }}</td>
+    <td>
+      <form method="get" action="/view_friend"><input type="hidden" id="iduser" name="iduser" value="{{ conf[0] }}">
+        <button type="submit">View</button></form>
+    </td>
   </tr>
 {% endfor %}
 </table>
