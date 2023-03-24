@@ -17,10 +17,10 @@ def profile():
     if "username" in session:
     # сюда надо передавать id пользователя
         asked_friends = show_friends(session["username"][0], "asked")
-        print(asked_friends)
+        # print(asked_friends)
         confirmed_friends = show_friends(session["username"][0], "confirmed")
         #РЕШЕНО! проблема с отображением друзей у обоих пользователей
-        print(confirmed_friends)
+        # print(confirmed_friends)
         favourites = show_favourites(session["username"][0])
         #РЕШЕНО! если возвращается None - то в шаблоне ошибка
         return render_template('profile.html', user=session["username"][1], asked=asked_friends, confirmed=confirmed_friends, favourites=favourites)
@@ -152,8 +152,8 @@ def add_favourite():
 def confirm():
     if "username" in session:
         if request.method == "GET" and request.args.get("conf_user"):
-            print(session["username"][0])
-            print(request.args.get("conf_user"))
+            # print(session["username"][0])
+            # print(request.args.get("conf_user"))
             confirm_friend((session["username"][0], int(request.args.get("conf_user"))))
             flash("Friend confirmed successfully", "success")
             return redirect(url_for("profile"))
@@ -162,8 +162,8 @@ def confirm():
 def reject():
     if "username" in session:
         if request.method == "GET" and request.args.get("rej_user"):
-            print(session["username"][0])
-            print(request.args.get("rej_user"))
+            # print(session["username"][0])
+            # print(request.args.get("rej_user"))
             reject_friend((session["username"][0], int(request.args.get("rej_user"))))
             flash("Friend rejected successfully", "success")
             return redirect(url_for("profile"))
@@ -173,8 +173,8 @@ def reject():
 def view_friend():
     if "username" in session:
         if request.method == "GET" and request.args.get("iduser"):
-            print(session["username"][0])
-            print(request.args.get("iduser"))
+            # print(session["username"][0])
+            # print(request.args.get("iduser"))
             favourites = show_favourites(request.args.get("iduser"))
             # reject_friend((session["username"][0], int(request.args.get("iduser"))))
             # # flash("Friend rejected successfully", "success")
