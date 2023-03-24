@@ -2,22 +2,22 @@
 {% block title %}<title>SocFilms - Homepage</title>{% endblock %}
 
 {% block login %}
-<a href="{{ url_for('login') }}" class="navbar-item">Login</a>
+<a href="{{ url_for('login') }}" class="navbar-item">Войти</a>
 {% endblock %}
 {% block signup %}
-<a href="{{ url_for('signup') }}" class="navbar-item">Sign Up</a>
+<a href="{{ url_for('signup') }}" class="navbar-item">Регистрация</a>
 {% endblock %}
 
 
 {% block content %}
 <br>
 <br>
-<h1 style="font-size:160%;">Welcome to SocFilms - social network for filmlovers</h1>
+<h1 style="font-size:160%;">Добро пожаловать на SocFilms - социальная сеть для любителей кино</h1>
 <br>
-<p>Here you can easily search new films, add favourites and of course share with friends.
-<br>Enjoy!</p>
+<p>Здесь вы можете с легкостью искать новые фильмы, добавлять любимые и конечно делиться ими с друзьями.
+<br>Наслаждайтесь!</p>
 <br>
 <br>
-<p>Do you want to <a href="{{ url_for('login') }}"><b><em>Log in?</em></b></a></p>
-<p>OR <a href="{{ url_for('signup') }}"><b><em>Sign up?</em></b></a></p>
+<p>хотите <a href="{{ url_for('login') }}"><b><em>ВОЙТИ?</em></b></a></p>
+<p>или <a href="{{ url_for('signup') }}"><b><em>ЗАРЕГИСТРИРОВАТЬСЯ?</em></b></a></p>
 {% endblock %}

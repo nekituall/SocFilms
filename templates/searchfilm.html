@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}<title>SocFilms - Search film</title>{% endblock %}
+{% block title %}<title>SocFilms - Искать фильм</title>{% endblock %}
 
 {% block user %}
-<a href="{{ url_for('search_friend') }}" class="navbar-item">Search friend</a>
+<a href="{{ url_for('search_friend') }}" class="navbar-item">Искать друзей</a>
 {% endblock %}
 {% block profile %}
-<a href="{{ url_for('profile') }}" class="navbar-item">Profile</a>
+<a href="{{ url_for('profile') }}" class="navbar-item">Профиль</a>
 {% endblock %}
 
 {% block logout %}
-<a href="{{ url_for('logout') }}" class="navbar-item">Logout</a>
+<a href="{{ url_for('logout') }}" class="navbar-item">Выйти</a>
 {% endblock %}
 
 
 {% block content %}
-<h1 style="font-size:160%;">Search new film by name easily</h1>
+<h1 style="font-size:160%;">Найти новые фильмы тут легко</h1>
 <br>
 <br>
 {% if error %}
@@ -23,20 +23,20 @@
 {% endif %}
 <form method=post>
     <dl>
-      <dt>Enter filmname here:
+      <dt>Введите название кино:
       <dd><input type=text name=filmname required>
     </dl>
-    <p><input type=submit value=Search>
+    <p><input type=submit value=Искать>
   </form>
 
 {% if films +%}
 <table>
   <tr>
-    <th>Film</th>
-    <th>Year</th>
-    <th>Genre</th>
-    <th>Country</th>
-    <th>Favourites</th>
+    <th>Фильм</th>
+    <th>Год</th>
+    <th>Жанр</th>
+    <th>Страна</th>
+    <th>Избранное</th>
   </tr>
 {% for film in films -%}
   <tr>
@@ -46,12 +46,12 @@
     <td>{{ film[4] }}</td>
     <td>
       <form method="get" action="/add_favourite"><input type="hidden" id="idfilm" name="idfilm" value="{{ film[0] }}">
-        <button type="submit">ADD</button></form></td>
+        <button type="submit">Добавить</button></form></td>
   </tr>
   {% endfor %}
 </table>
 {% else +%}
-    No such films yet..
+    Таких фильмов не нашли..
 {% endif %}
 
 {% endblock %}

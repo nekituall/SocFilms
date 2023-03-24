@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}<title>SocFilms - Your Profile</title>{% endblock %}
+{% block title %}<title>SocFilms - Ваш профиль</title>{% endblock %}
 
 {% block user %}
-<a href="{{ url_for('search_friend') }}" class="navbar-item">Search friend</a>
+<a href="{{ url_for('search_friend') }}" class="navbar-item">Искать друзей</a>
 {% endblock %}
 {% block profile %}
-<a href="{{ url_for('profile') }}" class="navbar-item">Profile</a>
+<a href="{{ url_for('profile') }}" class="navbar-item">Профиль</a>
 {% endblock %}
 
 {% block logout %}
-<a href="{{ url_for('logout') }}" class="navbar-item">Logout</a>
+<a href="{{ url_for('logout') }}" class="navbar-item">Выйти</a>
 {% endblock %}
 
 {% block content %}
 
-<h1 style="font-size:160%;"><b>{{user}}</b>, welcome and enjoy!!!</h1>
+<h1 style="font-size:160%;"><b>{{user}}</b>, рады тебя видеть!!!</h1>
 <br>
 <!--{% with messages = get_flashed_messages(with_categories=true) %}-->
 <!--  {% if messages %}-->
@@ -27,16 +27,16 @@
 <!--  {% endif %}-->
 <!--{% endwith %}-->
 <br>
-<h2 style="font-size:140%;">Asked friends</h2>
+<h2 style="font-size:140%;">Запросы в друзья</h2>
 <br>
 {% if asked -%}
 <table>
   <tr>
-    <th>Name</th>
-    <th>Surname</th>
-    <th>Country</th>
-    <th>Status</th>
-    <th>Action</th>
+    <th>Имя</th>
+    <th>Фамилия</th>
+    <th>Страна</th>
+    <th>Статус</th>
+    <th>Действие</th>
   </tr>
 {% for ask in asked %}
   <tr>
@@ -46,28 +46,28 @@
     <td>{{ ask[4] }}</td>
     <td>
       <form method="get" action="/confirm_friend"><input type="hidden" id="conf_user" name="conf_user" value="{{ ask[0] }}">
-        <button type="submit">Confirm</button></form> <form method="get" action="/reject_friend"><input type="hidden" id="rej_user" name="rej_user" value="{{ ask[0] }}">
-        <button type="submit">Reject</button></form>
+        <button type="submit">Добавить</button></form> <form method="get" action="/reject_friend"><input type="hidden" id="rej_user" name="rej_user" value="{{ ask[0] }}">
+        <button type="submit">Отклонить</button></form>
     </td>
   </tr>
 {% endfor %}
 </table>
 {% else -%}
-    No requests yet..
+    У вас пока нет новых запросов..
 {% endif %}
 
 <hr/>
-<h2 style="font-size:140%;">My friends</h2>
+<h2 style="font-size:140%;">Мои друзья</h2>
 <br>
 <br>
 {% if confirmed +%}
 <table>
   <tr>
-    <th>Name</th>
-    <th>Surname</th>
-    <th>Country</th>
-    <th>Status</th>
-    <th>Action</th>
+    <th>Имя</th>
+    <th>Фамилия</th>
+    <th>Страна</th>
+    <th>Статус</th>
+    <th>Действие</th>
   </tr>
 {% for conf in confirmed %}
   <tr>
@@ -83,20 +83,20 @@
 {% endfor %}
 </table>
 {% else -%}
-    No friends yet..
+    У вас пока нет друзей..
 {% endif %}
 
 <hr/>
-<h2 style="font-size:140%;">Favourite films</h2>
+<h2 style="font-size:140%;">Избранные фильмы</h2>
 <br>
 {% if favourites %}
 <table>
   <tr>
-    <th>Film</th>
-    <th>Year</th>
-    <th>Rating</th>
-    <th>Viewed on</th>
-    <th>Comments</th>
+    <th>Фильм</th>
+    <th>Год</th>
+    <th>Рейтинг</th>
+    <th>Просмотрен</th>
+    <th>Комментарии</th>
   </tr>
 {% for film in favourites %}
   <tr>
@@ -110,6 +110,6 @@
 {% endfor %}
 </table>
 {% else %}
-No favourites yet..
+Здесь будут ваши любимые фильмы..
 {% endif %}
 {% endblock %}

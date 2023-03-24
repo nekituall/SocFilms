@@ -1,24 +1,26 @@
 {% extends "base.html" %}
 
 {% block login %}
-<a href="{{ url_for('login') }}" class="navbar-item">Login</a>
+<a href="{{ url_for('login') }}" class="navbar-item">Войти</a>
 {% endblock %}
 {% block signup %}
-<a href="{{ url_for('signup') }}" class="navbar-item">Sign Up</a>
+<a href="{{ url_for('signup') }}" class="navbar-item">Регистрация</a>
 {% endblock %}
 
 {% block content %}
-  <h1>Login</h1>
+  <h1>Выполните вход</h1>
+
   {% if error %}
     <p class=error><strong>Error:</strong> {{ error }}
   {% endif %}
+<br>
   <form method=post>
     <dl>
-      <dt>Username:
+      <dt>Никнейм:
       <dd><input type=text name=username>
-      <dt>Password:
+      <dt>Пароль:
       <dd><input type=password name=password>
     </dl>
-    <p><input type=submit value=Login>
+    <p><input type=submit value=Войти>
   </form>
 {% endblock %}

@@ -3,33 +3,33 @@
 {% block title %}<title>SocFilms - Search film</title>{% endblock %}
 
 {% block login %}
-<a href="{{ url_for('login') }}" class="navbar-item">Login</a>
+<a href="{{ url_for('login') }}" class="navbar-item">Войти</a>
 {% endblock %}
 {% block signup %}
-<a href="{{ url_for('signup') }}" class="navbar-item">Sign Up</a>
+<a href="{{ url_for('signup') }}" class="navbar-item">Регистрация</a>
 {% endblock %}
 
 
-<h1 style="font-size:160%;">Search a new film by name easily</h1>
+<h1 style="font-size:160%;">Найти новые фильмы легко</h1>
 <br>
 <br>
 {% block content %}
 <form method=post>
     <dl>
-      <dt>Enter filmname here:
+      <dt>Введите название кино:
       <dd><input type=text name=filmname required>
     </dl>
-    <p><input type=submit value=Search>
+    <p><input type=submit value=Искать>
   </form>
 
 
 {% if films +%}
 <table>
   <tr>
-    <th>Film</th>
-    <th>Year</th>
-    <th>Genre</th>
-    <th>Country</th>
+    <th>Фильм</th>
+    <th>Год</th>
+    <th>Жанр</th>
+    <th>Страна</th>
   </tr>
 {% for film in films -%}
   <tr>
@@ -41,13 +41,13 @@
   {% endfor %}
 </table>
 {% else +%}
-    No such films yet..
+    Таких фильмов не нашли..
 {% endif %}
 <br>
 <br>
 <br>
 <div>
-  <p><i>However you can`t add to favourites until log in</i></p>
+  <p><i>Однако вы не можете добавлять фильмы в избранное пока не выполните вход</i></p>
 </div>
 
 {% endblock %}

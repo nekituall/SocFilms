@@ -15,7 +15,6 @@
   td { color: #000000;}
   table { overflow-x: auto; margin: auto;}
   button { cursor: pointer; }
-  error { color: red }
     </style>
 </head>
 <body>
@@ -31,10 +30,10 @@
                     <div id="navbarMenuHeroA" class="navbar-menu">
                         <div class="navbar-end">
                             <a href="{{ url_for('index') }}" class="navbar-item">
-                                Home
+                                Домой
                             </a>
                             <a href="{{ url_for('search_kino') }}" class="navbar-item">
-                                Search Film
+                                Искать фильм
                             </a>
                             {% block user %}
                             {% endblock %}

@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}<title>SocFilms - Sign up</title>{% endblock %}
+{% block title %}<title>SocFilms - Регистрация</title>{% endblock %}
 
 {% block login %}
-<a href="{{ url_for('login') }}" class="navbar-item">Login</a>
+<a href="{{ url_for('login') }}" class="navbar-item">Войти</a>
 {% endblock %}
 {% block signup %}
-<a href="{{ url_for('signup') }}" class="navbar-item">Sign Up</a>
+<a href="{{ url_for('signup') }}" class="navbar-item">Регистрация</a>
 {% endblock %}
 
 {% block content %}
@@ -14,7 +14,7 @@
 <!--  {% if error %}-->
 <!--    <p class=error><strong>Error:</strong> {{ error }}-->
 <!--  {% endif %}-->
-<h1 style="font-size:160%;">Sign up and enjoy all functions easily</h1>
+<h1 style="font-size:160%;">Зарегистрируйтесь и используйте весь функционал</h1>
 <br>
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -26,26 +26,26 @@
   {% endif %}
 {% endwith %}
 <br>
-<h2>Enter your data here:</h2>
+<h2>Заполните свои данные:</h2>
 
 
 <br>
 <form method=post>
     <dl>
-      <dt>Name:
+      <dt>Имя:
       <dd><input type=text name=name required>
-      <dt>Surname:
+      <dt>Фамилия:
       <dd><input type=text name=surname required>
-      <dt>Nickname:
+      <dt>Никнейм:
       <dd><input type=text name=nickname required>
-      <dt>Password:
+      <dt>Пароль:
       <dd><input type=password name=passw required>
       <dt>Email:
       <dd><input type=email name=email required>
-      <dt>Country:
+      <dt>Страна:
       <dd><input type=text name=country required>
     </dl>
-    <p><input type=submit value="Sign up">
+    <p><input type=submit value="Зарегистрироваться">
   </form>
 
 {% endblock %}

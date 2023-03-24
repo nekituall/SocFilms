@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}<title>SocFilms - View Friend Profile</title>{% endblock %}
+{% block title %}<title>SocFilms - Избранное друзей</title>{% endblock %}
 
 {% block user %}
-<a href="{{ url_for('search_friend') }}" class="navbar-item">Search friend</a>
+<a href="{{ url_for('search_friend') }}" class="navbar-item">Искать друзей</a>
 {% endblock %}
 {% block profile %}
-<a href="{{ url_for('profile') }}" class="navbar-item">Profile</a>
+<a href="{{ url_for('profile') }}" class="navbar-item">Профиль</a>
 {% endblock %}
 
 {% block logout %}
-<a href="{{ url_for('logout') }}" class="navbar-item">Logout</a>
+<a href="{{ url_for('logout') }}" class="navbar-item">Выйти</a>
 {% endblock %}
 
 {% block content %}
 
-<h1 style="font-size:160%;"><b>{{user}}</b>, view friend`s favourites and enjoy!!!</h1>
+<h1 style="font-size:160%;"><b>{{user}}</b>, пролистывайте избранные фильмы вашего друга и наслаждайтесь!!!</h1>
 <br>
 <!--{% with messages = get_flashed_messages(with_categories=true) %}-->
 <!--  {% if messages %}-->
@@ -29,16 +29,16 @@
 <br>
 
 <hr/>
-<h2 style="font-size:140%;">Favourite films</h2>
+<h2 style="font-size:140%;">Избранные фильмы</h2>
 <br>
 {% if favourites %}
 <table>
   <tr>
-    <th>Film</th>
-    <th>Year</th>
-    <th>Rating</th>
-    <th>Viewed on</th>
-    <th>Comments</th>
+    <th>Фильм</th>
+    <th>Год</th>
+    <th>Оценка</th>
+    <th>Просмотрен</th>
+    <th>Комментарии</th>
   </tr>
 {% for film in favourites %}
   <tr>
@@ -52,6 +52,6 @@
 {% endfor %}
 </table>
 {% else %}
-No favourites yet..
+Здесь будут избранные фильмы друзей..
 {% endif %}
 {% endblock %}

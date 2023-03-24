@@ -1,7 +1,6 @@
 from flask import Flask, request, render_template, session, redirect, url_for, flash
 from model import login_user, show_friends, show_favourites, search_film, create_user, search_user, confirm_friend, \
     ask_friend, reject_friend, add_favourites
-from werkzeug.security import generate_password_hash, check_password_hash  # дописать хэширование паролей
 
 app = Flask(__name__)
 
@@ -36,12 +35,12 @@ def login():
         passw = request.form['password']
         login_try = login_user(nick, passw)
         if login_try != None:
-            flash('You were successfully logged in')
+            # flash('You were successfully logged in')
             session["username"] = login_try
             # print(login_try)
             return redirect(url_for('profile'))
         else:
-            error = 'Please check you nickname/password'
+            error = 'Пожалуйста проверьте логин/пароль'
             return render_template('login.html', error=error)
     else:
         if "username" in session:
@@ -52,7 +51,7 @@ def login():
 @app.route('/signup', methods = ["GET", "POST"])
 def signup():
     if "username" in session:
-        flash("You already logged in!", "success")
+        # flash("You already logged in!", "success")
         return redirect(url_for('profile'))
     if request.method == "POST" and request.form["name"] and request.form["surname"] and request.form["nickname"] and \
             request.form["passw"] and request.form["email"] and request.form["country"]:
@@ -115,7 +114,7 @@ def ask_for_friend():
         if int(main) != int(fr):
             ask_friend((main, fr))
         else:
-            session["error"] = "You couldn`t add yourself"
+            session["error"] = "Вы не можете добавить себя"
             return redirect(url_for("search_friend"))
         return redirect(url_for('profile'))
     else:
@@ -180,7 +179,7 @@ def view_friend():
             # reject_friend((session["username"][0], int(request.args.get("iduser"))))
             # # flash("Friend rejected successfully", "success")
             # return "viewed"
-            return render_template("view_friend.html", favourites=favourites, user = session["username"][1])
+            return render_template("view_friend.html", favourites=favourites, user=session["username"][1])
 
 
 if __name__ == "__main__":

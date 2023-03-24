@@ -108,9 +108,15 @@ def show_friends(user_id, status):
     """Показать всех друзей"""
     conn = create_conn(config)
     cur = conn.cursor()
-    cur.execute("""SELECT us.idusers, us.name, us.surname, us.country, fr.status FROM users as us JOIN friends as fr 
+    if  status == "asked":
+        query = """SELECT us.idusers, us.name, us.surname, us.country, fr.status FROM users as us JOIN friends as fr 
+    ON us.idusers=fr.main_user WHERE fr.friend_user=%s AND fr.status=%s;"""
+        cur.execute(query, (user_id, status))
+    if status == "confirmed":
+        query= """SELECT us.idusers, us.name, us.surname, us.country, fr.status FROM users as us JOIN friends as fr 
     ON us.idusers=fr.main_user WHERE fr.friend_user=%s AND fr.status=%s UNION SELECT us.idusers, us.name, us.surname, us.country, fr.status FROM users as us JOIN friends as fr 
-    ON us.idusers=fr.friend_user WHERE fr.main_user=%s  AND fr.status=%s;""", (user_id, status, user_id, status))
+    ON us.idusers=fr.friend_user WHERE fr.main_user=%s  AND fr.status=%s;"""
+        cur.execute(query, (user_id, status, user_id, status))
     # cur.execute("""SELECT us.name, us.surname, us.country, fr.status FROM users as us JOIN friends as fr
     # ON us.idusers=fr.main_user WHERE fr.friend_user=%s AND fr.status=%s;""", (user_id, status))
     # cur.execute("""SELECT us.name, us.surname, us.country, fr.status FROM users as us JOIN friends as fr
