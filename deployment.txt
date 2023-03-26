@@ -1,5 +1,7 @@
 
 
-1) Create account "user" with DBA permissions on MySQL server
-2) To deploy DB you need to run model.py as main
-3) run app.py as web application instance on a server
+1) Create or choose account with DBA permissions on your MySQL server
+2) Insert DB account`s name and password in config_deploy and config dicts in model.py in order
+to operate correctly.
+3) To deploy DB you need to run model.py as main
+4) run app.py as web application instance on a server

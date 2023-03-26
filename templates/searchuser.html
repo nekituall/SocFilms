@@ -23,13 +23,13 @@
   {% endif %}
   <form method=post>
     <dl>
-      <dt>Введите целиком никнейм друга:
+      <dt>Введите страну друга:
       <dd><input type=text name=username>
     </dl>
     <p><input type=submit value=Искать>
   </form>
 <br>
-{% if user +%}
+{% if users +%}
 <table style="align:center;">
   <tr>
     <th>Имя</th>
@@ -38,6 +38,7 @@
     <th>Страна</th>
     <th>В друзья</th>
   </tr>
+  {% for user in users %}
   <tr>
       <!--    <tr><form><input type="hidden" value="{{film}}">-->
     <td>{{ user[1] }}</td>
@@ -46,6 +47,7 @@
     <td>{{ user[4] }}</td>
     <td><form><input type="hidden" id="username" name="username" value="{{user[0]}}"><button type="submit" formmethod="get" formaction="/ask_friend">Подать запрос</button></form></td>
   </tr>
+  {% endfor %}
 </table>
 
 {% else +%}

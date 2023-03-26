@@ -94,7 +94,7 @@ def search_friend():
         if request.method == "POST":
             if len(request.form["username"]) > 1:
                 res = search_user(request.form["username"])
-                return render_template("searchuser.html", user=res)
+                return render_template("searchuser.html", users=res)
             else:
                 return render_template("searchuser.html", error="Please check nickname")
         if "error" in session:
@@ -183,7 +183,7 @@ def view_friend():
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=5000, debug=True)
+    app.run(host="localhost", port=5000)
 
 
 

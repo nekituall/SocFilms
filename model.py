@@ -72,12 +72,12 @@ def create_user(person):
         print(f"{e} occured")
 
 
-def search_user(name):
-    """поиск пользователя по никнейму"""
+def search_user(country):
+    """поиск пользователей по стране"""
     conn = create_conn(config)
     cur = conn.cursor()
-    cur.execute("SELECT idusers, name, surname, nickname, country FROM users WHERE nickname=%s;", (name,))
-    user_data = cur.fetchone()
+    cur.execute("SELECT idusers, name, surname, nickname, country FROM users WHERE country=%s;", (country,))
+    user_data = cur.fetchall()
     try:
         if len(user_data) != 0 and user_data is not None:
             close_db(conn)
@@ -216,7 +216,7 @@ def search_film(name):
             JOIN countries c ON cs.id_country=c.idcountries WHERE filmname LIKE %s GROUP BY f.idfilms;"""
     cur.execute(query_all, ("%" + name + "%",))
     all_data = cur.fetchall()
-    print(all_data)
+    # print(all_data)
     return all_data
 
     #СТАРАЯ ВЕРСИЯ поиска по апи
@@ -322,13 +322,13 @@ def delete_favourites(value: tuple):
     print("Deleted from favourites")
 
 
-a = ("Julia",   "Kut",      "Kutashek", "passw", "kutashek@ya.ru", "Russia")
-b = ('Nikita',	'Pavlov',	'niknik', 'passw',	'kolbase@mail.ru',	'Bangladesh')
-c = ('Vasya',	'Ganin',	'pikNick',  'passw',	'pikNick@mail.ru',	'Bangladesh')
-d = ('Luci',	'Liu',	'Lucinda23',  'passw',	'Lucinda23@fail.ru',	'Canada')
-film1 = ('Титаник', 1997, ['мелодрама', 'история', 'триллер', 'драма'], ['США', 'Мексика'])
-film2 = ('Титаник', 2012, ['документальный', 'драма'], ['Россия'])
-film3 = ('Бэтмен: Начало', 2005, ['боевик', 'фантастика', 'приключения', 'драма'], ['США', 'Великобритания'])
+# a = ("Julia",   "Kut",      "Kutashek", "passw", "kutashek@ya.ru", "Russia")
+# b = ('Nikita',	'Pavlov',	'niknik', 'passw',	'kolbase@mail.ru',	'Bangladesh')
+# c = ('Vasya',	'Ganin',	'pikNick',  'passw',	'pikNick@mail.ru',	'Bangladesh')
+# d = ('Luci',	'Liu',	'Lucinda23',  'passw',	'Lucinda23@fail.ru',	'Canada')
+# film1 = ('Титаник', 1997, ['мелодрама', 'история', 'триллер', 'драма'], ['США', 'Мексика'])
+# film2 = ('Титаник', 2012, ['документальный', 'драма'], ['Россия'])
+# film3 = ('Бэтмен: Начало', 2005, ['боевик', 'фантастика', 'приключения', 'драма'], ['США', 'Великобритания'])
 
 if __name__ == "__main__":
     deploy_db(config_deploy)      # работает
