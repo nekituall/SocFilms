@@ -85,7 +85,7 @@ def search_user(country):
             return user_data
         else:
             print("No such user")
-            return "No such user"
+            return None
     except:
         return None
 

@@ -94,9 +94,13 @@ def search_friend():
         if request.method == "POST":
             if len(request.form["username"]) > 1:
                 res = search_user(request.form["username"])
-                return render_template("searchuser.html", users=res)
+                if res is not None:
+                    return render_template("searchuser.html", users=res)
+                else:
+                    entry = request.form["username"]
+                    return render_template("searchuser.html", error=f"no such users in {entry}")
             else:
-                return render_template("searchuser.html", error="Please check nickname")
+                return render_template("searchuser.html", error="Please check country")
         if "error" in session:
             error = session["error"]
             del session["error"]
