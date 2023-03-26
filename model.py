@@ -58,16 +58,22 @@ def close_db(conn):
 
 def create_user(person):
     """добавить нового пользователя
-    person - сущность пользвоателя в виде кортежа
+    person - сущность пользователя в виде кортежа
     """
     try:
         conn = create_conn(config)
         cur = conn.cursor()
-        query = ("INSERT INTO users (name, surname, nickname, passw, email, country) VALUES (%s,%s,%s,%s,%s,%s);")
-        cur.execute(query, person)
-        conn.commit()
-        close_db(conn)
-        print("User added")
+        query = ("SELECT nickname FROM users WHERE nickname=%s")
+        cur.execute(query, (person[2],))
+        res = cur.fetchone()
+        if len(res) != 0:
+            return None
+        else:
+            query = ("INSERT INTO users (name, surname, nickname, passw, email, country) VALUES (%s,%s,%s,%s,%s,%s);")
+            cur.execute(query, person)
+            conn.commit()
+            close_db(conn)
+            print("User added")
     except mysql.connector.errors.IntegrityError as e:
         print(f"{e} occured")
 
@@ -216,7 +222,7 @@ def search_film(name):
             JOIN countries c ON cs.id_country=c.idcountries WHERE filmname LIKE %s GROUP BY f.idfilms;"""
     cur.execute(query_all, ("%" + name + "%",))
     all_data = cur.fetchall()
-    # print(all_data)
+    print(all_data)
     return all_data
 
     #СТАРАЯ ВЕРСИЯ поиска по апи

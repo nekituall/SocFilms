@@ -35,9 +35,8 @@ def login():
         passw = request.form['password']
         login_try = login_user(nick, passw)
         if login_try != None:
-            # flash('You were successfully logged in')
             session["username"] = login_try
-            # print(login_try)
+
             return redirect(url_for('profile'))
         else:
             error = 'Пожалуйста проверьте логин/пароль'
@@ -51,17 +50,17 @@ def login():
 @app.route('/signup', methods = ["GET", "POST"])
 def signup():
     if "username" in session:
-        # flash("You already logged in!", "success")
         return redirect(url_for('profile'))
     if request.method == "POST" and request.form["name"] and request.form["surname"] and request.form["nickname"] and \
             request.form["passw"] and request.form["email"] and request.form["country"]:
         data = request.form.values()
-        try:
-            data = tuple([i for i in data])
-            create_user(data)
+        data = tuple([i for i in data])
+        res = create_user(data)
+        if res is None:
+            error = "Пользователь с таким никнеймом уже существует"
+            return render_template('signup.html', error=error)
+        else:
             return redirect(url_for("login"))
-        except:
-            return render_template('signup.html')
     return render_template('signup.html')
 
 
@@ -74,16 +73,23 @@ def logout():
 
 @app.route("/searchfilm", methods=["GET", "POST"])
 def search_kino():
+    error = "Таких фильмов не нашли.."
     if "username" in session:
         if request.method == 'POST':
             res = search_film(request.form["filmname"])
-            return render_template("searchfilm.html", films=res)
+            if len(res) != 0:
+                return render_template("searchfilm.html", films=res)
+            else:
+                return render_template("searchfilm.html", error=error)
         else:
             return render_template("searchfilm.html")
     else:
         if request.method == 'POST' and request.form["filmname"]:
             res = search_film(request.form["filmname"])
-            return render_template("searchfilm4all.html", films=res)
+            if len(res) != 0:
+                return render_template("searchfilm4all.html", films=res)
+            else:
+                return render_template("searchfilm4all.html", error=error)
         return render_template("searchfilm4all.html",)
 
 
@@ -98,9 +104,9 @@ def search_friend():
                     return render_template("searchuser.html", users=res)
                 else:
                     entry = request.form["username"]
-                    return render_template("searchuser.html", error=f"no such users in {entry}")
+                    return render_template("searchuser.html", error="Таких пользователей не нашли")
             else:
-                return render_template("searchuser.html", error="Please check country")
+                return render_template("searchuser.html", error="Проверьте ваш ввод")
         if "error" in session:
             error = session["error"]
             del session["error"]
@@ -159,7 +165,6 @@ def confirm():
             # print(session["username"][0])
             # print(request.args.get("conf_user"))
             confirm_friend((session["username"][0], int(request.args.get("conf_user"))))
-            flash("Friend confirmed successfully", "success")
             return redirect(url_for("profile"))
 
 @app.route("/reject_friend")
@@ -169,7 +174,6 @@ def reject():
             # print(session["username"][0])
             # print(request.args.get("rej_user"))
             reject_friend((session["username"][0], int(request.args.get("rej_user"))))
-            flash("Friend rejected successfully", "success")
             return redirect(url_for("profile"))
 
 
@@ -177,17 +181,12 @@ def reject():
 def view_friend():
     if "username" in session:
         if request.method == "GET" and request.args.get("iduser"):
-            # print(session["username"][0])
-            # print(request.args.get("iduser"))
             favourites = show_favourites(request.args.get("iduser"))
-            # reject_friend((session["username"][0], int(request.args.get("iduser"))))
-            # # flash("Friend rejected successfully", "success")
-            # return "viewed"
             return render_template("view_friend.html", favourites=favourites, user=session["username"][1])
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=5000)
+    app.run(host="localhost", port=5000, debug=True)
 
 
 

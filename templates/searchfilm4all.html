@@ -9,11 +9,13 @@
 <a href="{{ url_for('signup') }}" class="navbar-item">Регистрация</a>
 {% endblock %}
 
-
+{% block content %}
 <h1 style="font-size:160%;">Найти новые фильмы легко</h1>
 <br>
 <br>
-{% block content %}
+{% if error %}
+  <p class=error><strong>Error:</strong> {{ error }}
+{% endif %}
 <form method=post>
     <dl>
       <dt>Введите название кино:
@@ -41,7 +43,6 @@
   {% endfor %}
 </table>
 {% else +%}
-    Таких фильмов не нашли..
 {% endif %}
 <br>
 <br>

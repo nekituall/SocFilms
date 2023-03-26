@@ -11,20 +11,12 @@
 
 {% block content %}
 
-<!--  {% if error %}-->
-<!--    <p class=error><strong>Error:</strong> {{ error }}-->
-<!--  {% endif %}-->
 <h1 style="font-size:160%;">Зарегистрируйтесь и используйте весь функционал</h1>
 <br>
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for category, message in messages %}
-      <li class="{{ category }}">{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+<br>
+{% if error %}
+  <p class=error><strong>Error:</strong> {{ error }}
+{% endif %}
 <br>
 <h2>Заполните свои данные:</h2>
 

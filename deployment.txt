@@ -4,4 +4,5 @@
 2) Insert DB account`s name and password in config_deploy and config dicts in model.py in order
 to operate correctly.
 3) To deploy DB you need to run model.py as main
-4) run app.py as web application instance on a server
+4) Install all required packages via pip install -r requirements.txt
+5) run app.py as web application instance on a server
