@@ -8,14 +8,14 @@ from api import search_api
 #для развертки БД
 config_deploy = {
     "user": "user",
-    "password": "1ngodwetrust",
-    "host": "127.0.0.1"
+    "password": "userpasswd",
+    "host": "ipaddr"
 }
 
 config = {
     "user": "user",
-    "password": "1ngodwetrust",
-    "host": "127.0.0.1",
+    "password": "userpasswd",
+    "host": "ipaddr",
     "database" : "socfilms_db"
 }
 
