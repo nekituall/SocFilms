@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block title %}<title>SocFilms</title>{% endblock %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <link rel="icon" type="image/x-icon" href="/static/icon.ico">
+    <style>
+    table, th, td { align: center; border-bottom: 2px solid #ddd;
+  text-align: center; vertical-align: middle;
+  border-collapse: collapse; padding: 15px;}
+  tr:hover {background-color: coral;}
+  td { color: #000000;}
+  table { overflow-x: auto; margin: auto;}
+  button { cursor: pointer; }
+    </style>
+</head>
+<body>
+<!-- изображение на заднем фоне за CSS  -->
+<!-- style="background-image:url({{url_for('static', filename='marvel.jpg')}});-->
+<!--    background-repeat: no-repeat;"-->
+    <section class="hero is-primary is-fullheight">
+
+        <div class="hero-head">
+            <nav class="navbar">
+                <div class="container">
+
+                    <div id="navbarMenuHeroA" class="navbar-menu">
+                        <div class="navbar-end">
+                            <a href="{{ url_for('index') }}" class="navbar-item">
+                                Домой
+                            </a>
+                            <a href="{{ url_for('search_kino') }}" class="navbar-item">
+                                Искать фильм
+                            </a>
+                            {% block user %}
+                            {% endblock %}
+                            {% block profile %}
+                            {% endblock %}
+                            {% block login %}
+                            {% endblock %}
+                            {% block signup %}
+                            {% endblock %}
+                            {% block logout %}
+                            {% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+<!--{% with messages = get_flashed_messages() %}-->
+<!--  {% if messages %}-->
+<!--    <ul class=flashes>-->
+<!--    {% for message in messages %}-->
+<!--      <li>{{ message }}</li>-->
+<!--    {% endfor %}-->
+<!--    </ul>-->
+<!--  {% endif %}-->
+<!--{% endwith %}-->
+
+        <div class="hero-body">
+            <div class="container has-text-centered" style="font-size:120%">
+
+               {% block content %}
+               {% endblock %}
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

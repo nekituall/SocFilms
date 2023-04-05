@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}<title>SocFilms - Search film</title>{% endblock %}
+
+{% block login %}
+<a href="{{ url_for('login') }}" class="navbar-item">Войти</a>
+{% endblock %}
+{% block signup %}
+<a href="{{ url_for('signup') }}" class="navbar-item">Регистрация</a>
+{% endblock %}
+
+{% block content %}
+<h1 style="font-size:160%;">Найти новые фильмы легко</h1>
+<br>
+<br>
+{% if error %}
+  <p class=error><strong>Error:</strong> {{ error }}
+{% endif %}
+<form method=post>
+    <dl>
+      <dt>Введите название кино:
+      <dd><input type=text name=filmname required>
+    </dl>
+    <p><input type=submit value=Искать>
+  </form>
+
+
+{% if films +%}
+<table>
+  <tr>
+    <th>Фильм</th>
+    <th>Год</th>
+    <th>Жанр</th>
+    <th>Страна</th>
+  </tr>
+{% for film in films -%}
+  <tr>
+    <td>{{ film[1] }}</td>
+    <td>{{ film[2] }}</td>
+    <td>{{ film[3] }}</td>
+    <td>{{ film[4] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else +%}
+{% endif %}
+<br>
+<br>
+<br>
+<div>
+  <p><i>Однако вы не можете добавлять фильмы в избранное пока не выполните вход</i></p>
+</div>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+<!doctype html>
+<head>
+<title>SocFilms</title>
+<link rel="icon" type="image/x-icon" href="/static/icon.ico">
+<style>
+  body {background-color:powderblue;}
+  h1 {vertical-align:middle; color:white; font-family: Comic Sans MS; margin: 5px;}
+  h2 {vertical-align:middle; color:white; font-family: Comic Sans MS; margin: 5px;}
+  p {color:white; font-family: Comic Sans MS; font-size:120%; margin: 10px;}
+  a {color:blue; font-family: Comic Sans MS; margin: 5px}
+  li {color:black; font-family: Comic Sans MS; margin: 5px}
+</style>
+</head>
+
+<div>
+                            <a href="{{ url_for('index') }}" class="navbar-item">
+                                Home
+                            </a>
+                            <a href="{{ url_for('profile') }}" class="navbar-item">
+                                Profile
+                            </a>
+                            <a href="{{ url_for('login') }}" class="navbar-item">
+                                Login
+                            </a>
+                            <a href="{{ url_for('signup') }}" class="navbar-item">
+                                Sign Up
+                            </a>
+                            <a href="{{ url_for('logout') }}" class="navbar-item">
+                                Logout
+                            </a>
+                            <a href="{{ url_for('about') }}" class="navbar-item">
+                                About
+                            </a>
+                            {% block a %}
+                            {% endblock %}
+</div>
+
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+{% block body %}
+{% endblock %}

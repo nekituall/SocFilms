@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}<title>SocFilms - Искать друзей</title>{% endblock %}
+
+{% block user %}
+<a href="{{ url_for('search_friend') }}" class="navbar-item">Искать друзей</a>
+{% endblock %}
+{% block profile %}
+<a href="{{ url_for('profile') }}" class="navbar-item">Профиль</a>
+{% endblock %}
+
+{% block logout %}
+<a href="{{ url_for('logout') }}" class="navbar-item">Выйти</a>
+{% endblock %}
+
+
+{% block content %}
+  <h1 style="font-size:160%;">Найти новых друзей тут легко</h1>
+  <br>
+  <br>
+  {% if error %}
+    <p class=error><strong>Error:</strong> {{ error }}
+  {% endif %}
+  <form method=post>
+    <dl>
+      <dt>Введите страну друга:
+      <dd><input type=text name=username>
+    </dl>
+    <p><input type=submit value=Искать>
+  </form>
+<br>
+{% if users +%}
+<table style="align:center;">
+  <tr>
+    <th>Имя</th>
+    <th>Фамилия</th>
+    <th>Никнейм</th>
+    <th>Страна</th>
+    <th>В друзья</th>
+  </tr>
+  {% for user in users %}
+  <tr>
+      <!--    <tr><form><input type="hidden" value="{{film}}">-->
+    <td>{{ user[1] }}</td>
+    <td>{{ user[2] }}</td>
+    <td>{{ user[3] }}</td>
+    <td>{{ user[4] }}</td>
+    <td><form><input type="hidden" id="username" name="username" value="{{user[0]}}"><button type="submit" formmethod="get" formaction="/ask_friend">Подать запрос</button></form></td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% else +%}
+<br/>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}<title>SocFilms - Избранное друзей</title>{% endblock %}
+
+{% block user %}
+<a href="{{ url_for('search_friend') }}" class="navbar-item">Искать друзей</a>
+{% endblock %}
+{% block profile %}
+<a href="{{ url_for('profile') }}" class="navbar-item">Профиль</a>
+{% endblock %}
+
+{% block logout %}
+<a href="{{ url_for('logout') }}" class="navbar-item">Выйти</a>
+{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size:160%;"><b>{{user}}</b>, пролистывайте избранные фильмы вашего друга и наслаждайтесь!!!</h1>
+<br>
+<!--{% with messages = get_flashed_messages(with_categories=true) %}-->
+<!--  {% if messages %}-->
+<!--    <ul class=flashes>-->
+<!--    {% for category, message in messages %}-->
+<!--      <li class="{{ category }}">{{ message }}</li>-->
+<!--    {% endfor %}-->
+<!--    </ul>-->
+<!--  {% endif %}-->
+<!--{% endwith %}-->
+<br>
+
+<hr/>
+<h2 style="font-size:140%;">Избранные фильмы</h2>
+<br>
+{% if favourites %}
+<table>
+  <tr>
+    <th>Фильм</th>
+    <th>Год</th>
+    <th>Оценка</th>
+    <th>Просмотрен</th>
+    <th>Комментарии</th>
+  </tr>
+{% for film in favourites %}
+  <tr>
+    <td>{{ film[0] }}</td>
+    <td>{{ film[1] }}</td>
+    <td>{{ film[2] }}</td>
+    <td>{{ film[3] }}</td>
+    <td>{{ film[4] }}</td>
+  </tr>
+
+{% endfor %}
+</table>
+{% else %}
+Здесь будут избранные фильмы друзей..
+{% endif %}
+{% endblock %}
